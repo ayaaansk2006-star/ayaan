@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Admin — Altitude Moto</title><link rel="icon" href="/logo.png"><link rel="stylesheet" href="/css/style.css?v=3">
+<style>
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 20px 0; }
+.kpis .panel b { display: block; font-family: 'Archivo Black', Inter, sans-serif; font-size: 26px; color: var(--lime); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+select, .pin { background: #0e0e0e; color: #fff; border: 1px solid var(--line); padding: 8px; border-radius: 8px; font: inherit; }
+.pin { width: 100px; }
+.tabs { display: flex; gap: 10px; margin-top: 20px; }
+.st-Cancelled { color: var(--red); } .st-Delivered { color: var(--lime); }
+.scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png" alt="">ADMIN</a>
+  <nav class="links"><button class="cart-btn" id="logout" style="display:none">Log out</button></nav>
+</div></header>
+<main class="wrap" style="padding:30px 20px 80px">
+  <form class="panel form" id="login" style="max-width:380px;margin:60px auto;display:none">
+    <h2 class="display">Admin login</h2>
+    <label>Password<input type="password" name="password" required autofocus></label>
+    <button class="btn">Log in</button><div class="err" id="lerr"></div>
+  </form>
+  <div id="app" style="display:none">
+    <div class="kpis" id="kpis"></div>
+    <div class="filters"><button class="on" data-tab="orders">Orders</button><button data-tab="products">Products</button>
+      <input id="q" placeholder="Search name, phone, order ID, UTR…"></div>
+    <div class="panel scroll" id="view"></div>
+  </div>
+</main>
+<script src="/js/common.js?v=2"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

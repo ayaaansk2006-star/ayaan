@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout — Altitude Moto</title><link rel="icon" href="/logo.png"><link rel="stylesheet" href="/css/style.css?v=3">
+<style>
+.co { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; padding: 40px 20px 80px; }
+.qr { background: #fff; padding: 12px; border-radius: 14px; width: 240px; margin: 14px auto; }
+.step { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+.step i { font-style: normal; background: var(--lime); color: #000; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; }
+@media (max-width: 820px) { .co { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png" alt="">ALTITUDE MOTO</a>
+  <nav class="links"><a href="/">← Continue shopping</a></nav>
+</div></header>
+
+<main class="wrap co">
+  <form class="panel form" id="form">
+    <div class="step"><i>1</i><h3 class="display">Shipping details</h3></div>
+    <div class="two"><label>Full name<input name="name" required maxlength="80"></label>
+      <label>Mobile number<input name="phone" required inputmode="numeric" placeholder="10-digit"></label></div>
+    <label>Email (order confirmation is sent here)<input name="email" type="email" required></label>
+    <label>Address<textarea name="address" rows="2" required maxlength="300"></textarea></label>
+    <div class="two"><label>City<input name="city" required></label><label>State<input name="state" required></label></div>
+    <div class="two"><label>Pincode<input name="pincode" required inputmode="numeric" maxlength="6"></label>
+      <label>Bike & year (optional)<input name="notes" maxlength="300" placeholder="e.g. Speed 400, 2024"></label></div>
+
+    <div class="step" style="margin-top:10px"><i>2</i><h3 class="display">Payment</h3></div>
+    <label class="addon" id="opt-rzp"><input type="radio" name="pm" value="rzp" checked>
+      <span><b>Pay Online</b> — UPI, Cards, Netbanking, Wallets<br><small style="color:var(--muted)">Instant confirmation, secured by Razorpay</small></span></label>
+    <label class="addon"><input type="radio" name="pm" value="qr">
+      <span><b>Scan GPay QR</b> — pay manually, then enter transaction ID</span></label>
+
+    <div id="qr-box" style="display:none;text-align:center">
+      <div style="background:#fff;color:#000;border-radius:16px;padding:18px;width:300px;margin:14px auto;border:3px solid var(--lime)">
+        <img src="/logo.png" alt="" style="width:44px;margin:0 auto 6px;border-radius:8px">
+        <b style="font-family:'Archivo Black',sans-serif;letter-spacing:1px">ALTITUDE MOTO</b>
+        <img id="qr" alt="Altitude Moto UPI QR code" style="width:100%;margin-top:8px">
+        <small>Scan with GPay · PhonePe · Paytm · any UPI app</small>
+      </div>
+      <p>Amount <b class="lime display" id="amt"></b> is filled in automatically when you scan. UPI ID <b id="upiid"></b></p>
+      <a class="btn ghost" id="upilink" style="margin:10px 0">Open UPI app (mobile)</a>
+      <label style="text-align:left">UPI Transaction ID / UTR (12 digits, shown in your UPI app after paying)<input name="utr" maxlength="30"></label>
+    </div>
+    <div class="err" id="err"></div>
+    <button class="btn" id="place">Pay &amp; Place Order</button>
+  </form>
+
+  <aside class="panel" style="height:fit-content;position:sticky;top:90px">
+    <h3 class="display" style="margin-bottom:10px">Order summary</h3>
+    <div id="summary"></div>
+    <div class="row" style="margin-top:16px;font-size:20px"><span>Total</span><b class="lime display" id="total"></b></div>
+    <p style="color:var(--muted);font-size:13px;margin-top:14px">Online payments confirm instantly; QR payments are confirmed after we verify them. You'll get an email at every step.</p>
+  </aside>
+</main>
+
+<script src="/js/common.js?v=2"></script>
+<script>
+const items = Cart.get().map(i => ({ slug: i.slug, qty: i.qty, addons: i.addons }));
+if (!items.length) location.href = '/';
+api('/api/quote', { method: 'POST', body: { items } }).then(q => {
+  $('#summary').innerHTML = q.lines.map(l => `<div class="line"><img src="${esc(l.image)}" alt="">
+    <div><b>${esc(l.title)}</b>${l.addons.map(a => `<br><small class="lime">+ ${esc(a.name)}</small>`).join('')}
+    <br><small>Qty ${l.qty} × ${inr(l.unit)}</small></div><b>${inr(l.lineTotal)}</b></div>`).join('');
+  $('#total').textContent = $('#amt').textContent = inr(q.total);
+  $("#qr").src = q.qr; $("#upiid").textContent = q.upiId; $("#upilink").href = q.upiLink;
+  if (!q.razorpay) { $('#opt-rzp').style.display = 'none'; $('[name=pm][value=qr]').checked = true; showPm(); }
+}).catch(e => { $('#err').textContent = e.message; });
+
+const pm = () => $('[name=pm]:checked').value;
+function showPm() {
+  $('#qr-box').style.display = pm() === 'qr' ? '' : 'none';
+  $('[name=utr]').required = pm() === 'qr';
+}
+document.querySelectorAll('[name=pm]').forEach(r => r.onchange = showPm);
+
+const done = (id, email) => {
+  Cart.clear();
+  location.href = `/track?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&new=1`;
+};
+const fail = msg => { $('#err').textContent = msg; $('#place').disabled = false; };
+
+function loadRzp() {
+  return window.Razorpay ? Promise.resolve() : new Promise((ok, no) => {
+    const s = document.createElement('script');
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js'; s.onload = ok; s.onerror = () => no(new Error('Could not load payment window'));
+    document.head.appendChild(s);
+  });
+}
+
+async function payOnline(body) {
+  const o = await api('/api/razorpay/order', { method: 'POST', body });
+  await loadRzp();
+  const rz = new Razorpay({
+    key: o.key, order_id: o.rzpOrderId, amount: o.amount, currency: 'INR',
+    name: 'Altitude Moto', description: 'Order ' + o.id, image: location.origin + '/logo.png',
+    prefill: { name: o.name, email: o.email, contact: o.phone }, theme: { color: '#DFFF00' },
+    handler: async resp => {
+      try { await api('/api/razorpay/verify', { method: 'POST', body: resp }); done(o.id, o.email); }
+      catch (err) { fail(err.message); }
+    },
+    modal: { ondismiss: () => fail('Payment cancelled. You can try again.') }
+  });
+  rz.on('payment.failed', r => fail('Payment failed: ' + (r.error?.description || 'please try again')));
+  rz.open();
+}
+
+$('#form').onsubmit = async e => {
+  e.preventDefault();
+  $('#err').textContent = ''; $('#place').disabled = true;
+  const body = { ...Object.fromEntries(new FormData(e.target)), items };
+  try {
+    if (pm() === 'rzp') return await payOnline(body);
+    const { id } = await api('/api/orders', { method: 'POST', body });
+    done(id, body.email);
+  } catch (err) { fail(err.message); }
+};
+</script>
+</body>
+</html>

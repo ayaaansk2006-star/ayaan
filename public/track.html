@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Track Order — Altitude Moto</title><link rel="icon" href="/logo.png"><link rel="stylesheet" href="/css/style.css?v=3">
+<style>
+.steps { display: flex; justify-content: space-between; margin: 24px 0; gap: 6px; }
+.steps div { flex: 1; text-align: center; font-size: 12px; color: var(--muted); border-top: 4px solid var(--line); padding-top: 8px; }
+.steps div.done { border-color: var(--lime); color: #fff; }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png" alt="">ALTITUDE MOTO</a>
+  <nav class="links"><a href="/">Shop</a></nav>
+</div></header>
+<main class="wrap" style="max-width:720px;padding:50px 20px">
+  <div id="success" class="panel" style="display:none;text-align:center;margin-bottom:20px;border-color:var(--lime)">
+    <h1 class="display lime">Order placed!</h1>
+    <p>A confirmation email is on its way. We'll verify your payment and update you.</p>
+  </div>
+  <form class="panel form" id="form">
+    <h2 class="display">Track your order</h2>
+    <div class="two"><label>Order ID<input name="oid" required></label><label>Email<input name="email" type="email" required></label></div>
+    <button class="btn">Track</button><div class="err" id="err"></div>
+  </form>
+  <div id="result" class="panel" style="display:none;margin-top:20px"></div>
+</main>
+<script src="/js/common.js?v=2"></script>
+<script>
+const FLOW = ['Payment Verification Pending', 'Payment Confirmed', 'Shipped', 'Delivered'];
+async function track(id, email) {
+  $('#err').textContent = '';
+  try {
+    const o = await api(`/api/orders/${encodeURIComponent(id)}?email=${encodeURIComponent(email)}`);
+    const at = FLOW.indexOf(o.status);
+    $('#result').style.display = 'block';
+    $('#result').innerHTML = `<div class="row"><h3>Order <span class="lime">${esc(o.id)}</span></h3>
+      <small>${new Date(o.created_at).toLocaleString('en-IN')}</small></div>
+      <p style="margin-top:8px">Status: <b class="lime">${esc(o.status)}</b></p>
+      ${o.status === 'Cancelled' ? '' : `<div class="steps">${FLOW.map((s, i) => `<div class="${i <= at ? 'done' : ''}">${s}</div>`).join('')}</div>`}
+      ${o.items.map(l => `<div class="line"><img src="${esc(l.image)}" alt=""><div><b>${esc(l.title)}</b>
+        ${l.addons.map(a => `<br><small class="lime">+ ${esc(a.name)}</small>`).join('')}<br><small>Qty ${l.qty}</small></div>
+        <b>${inr(l.lineTotal)}</b></div>`).join('')}
+      <div class="row" style="margin-top:12px"><b>Total</b><b class="lime display">${inr(o.total)}</b></div>`;
+  } catch (e) { $('#err').textContent = e.message; $('#result').style.display = 'none'; }
+}
+const qs = new URLSearchParams(location.search);
+if (qs.get('new')) $('#success').style.display = 'block';
+if (qs.get('id')) { $("#form").oid.value = qs.get('id'); $('#form').email.value = qs.get('email'); track(qs.get('id'), qs.get('email')); }
+$('#form').onsubmit = e => { e.preventDefault(); track(e.target.oid.value.trim(), e.target.email.value.trim()); };
+</script>
+</body>
+</html>
