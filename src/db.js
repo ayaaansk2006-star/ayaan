@@ -38,11 +38,18 @@ async function init() {
   const cols = all('PRAGMA table_info(orders)').map(c => c.name);
   if (!cols.includes('method')) db.run("ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'");
   if (!cols.includes('rzp_order_id')) db.run('ALTER TABLE orders ADD COLUMN rzp_order_id TEXT');
+  if (!all('PRAGMA table_info(products)').some(c => c.name === 'seeded_price')) {
+    db.run('ALTER TABLE products ADD COLUMN seeded_price INTEGER');
+    db.run('UPDATE products SET seeded_price=price');
+  }
+  // A catalog price change overrides the live price once; admin edits persist until the catalog changes again.
   catalog.forEach((p, i) => db.run(
-    `INSERT INTO products (slug,bike,brand,title,compat,price,mrp_breakdown,note,addons,images,sort)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET images=excluded.images`,
+    `INSERT INTO products (slug,bike,brand,title,compat,price,mrp_breakdown,note,addons,images,sort,seeded_price)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET images=excluded.images,
+     price=CASE WHEN products.seeded_price IS NOT excluded.seeded_price THEN excluded.price ELSE products.price END,
+     seeded_price=excluded.seeded_price`,
     [p.slug, p.bike, p.brand, p.title, p.compat, p.price, p.mrp_breakdown, p.note,
-      JSON.stringify(p.addons), JSON.stringify(p.images), i]));
+      JSON.stringify(p.addons), JSON.stringify(p.images), i, p.price]));
   save();
 }
 

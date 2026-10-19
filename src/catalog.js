@@ -34,7 +34,7 @@ const list = [
     price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '', addons: [] },
   { slug: 'hero-xpulse-210', bike: 'Hero Xpulse 210', brand: 'Hero', page: 11, n: 8,
     title: 'Hero Xpulse 210 GPS Mount', compat: 'Compatible with Hero Xpulse 210 windshield',
-    price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '', addons: [] },
+    price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '', addons: [] },
   { slug: 're-himalayan-411', bike: 'RE Himalayan 411 (BS3/BS4/BS6)', brand: 'Royal Enfield', page: 12, n: 5,
     title: 'RE Himalayan 411 GPS Mount', compat: 'Compatible with Himalayan 411 BS4/BS6 (up to 2021) windshield',
     price: 1500, mrp_breakdown: 'GPS Mount ₹1500', note: '', addons: [] },
