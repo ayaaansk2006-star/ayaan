@@ -27,7 +27,6 @@ function initFinder() {
 async function initReviews() {
   const list = await api('/api/reviews').catch(() => []);
   if (!list.length) return;
-  $('#reviews').hidden = false;
   $('#revGrid').innerHTML = list.map(r => {
     const p = products.find(x => x.slug === r.slug);
     return `<div class="rev reveal"><div class="lime">${stars(r.rating)}</div><p>“${esc(r.text)}”</p>
@@ -37,12 +36,20 @@ async function initReviews() {
 }
 
 let installEvt;
-addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('#installApp').hidden = false; });
-$('#installApp').onclick = async e => {
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+async function installApp(e) {
   e.preventDefault();
-  if (!installEvt) return;
-  installEvt.prompt(); await installEvt.userChoice; installEvt = null; $('#installApp').hidden = true;
-};
+  if (installEvt) { installEvt.prompt(); await installEvt.userChoice; installEvt = null; return; }
+  const ios = /iphone|ipad/i.test(navigator.userAgent);
+  $('#modal-box').innerHTML = `<button class="close" id="mclose" aria-label="Close">×</button><div class="detail" style="grid-column:1/-1">
+    <img src="/icon-192.png" alt="" style="width:72px;border-radius:16px"><h2>Install Altitude Moto</h2>
+    <p style="color:var(--muted)">Add the shop to your home screen. It opens full-screen like an app.</p>
+    ${ios ? '<p><b class="lime">iPhone:</b> tap the <b>Share</b> button in Safari, then <b>Add to Home Screen</b>.</p>'
+      : '<p><b class="lime">Android (Chrome):</b> tap the <b>three-dots menu</b> (top right), then <b>Install app</b> or <b>Add to Home screen</b>.</p><p><b class="lime">iPhone (Safari):</b> tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>'}
+    <p style="color:var(--muted);font-size:13px">Works on the live website link (not inside other apps\' browsers).</p></div>`;
+  $('#mclose').onclick = closeModal; $('#modal').classList.add('open');
+}
+$('#installApp').onclick = installApp; $('#installHero').onclick = installApp;
 
 const waitProducts = setInterval(() => {
   if (!products.length) return;

@@ -21,7 +21,8 @@ function openProduct(p) {
     <div id="pReviews"></div>
   </div>`;
   api('/api/reviews?slug=' + encodeURIComponent(p.slug)).then(list => {
-    if (!list.length || !$('#pReviews')) return;
+    if (!$('#pReviews')) return;
+    if (!list.length) { $('#pReviews').innerHTML = '<h4 style="margin-top:6px">Reviews</h4><p style="color:var(--muted);font-size:14px">No reviews yet for this part. Verified buyers can review after delivery.</p>'; return; }
     const avg = list.reduce((s, r) => s + r.rating, 0) / list.length;
     $('#pReviews').innerHTML = `<h4 style="margin-top:6px"><span class="lime">${stars(Math.round(avg))}</span> ${avg.toFixed(1)} · ${list.length} verified review${list.length > 1 ? 's' : ''}</h4>` +
       list.slice(0, 5).map(r => `<div class="rev"><div class="lime">${stars(r.rating)}</div><p>${esc(r.text)}</p><small>— ${esc(r.name)}</small></div>`).join('');

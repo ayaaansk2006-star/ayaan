@@ -115,3 +115,5 @@ section.reviews { padding: 80px 0; border-top: 1px solid var(--line); }
 .video { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 @media (max-width: 900px) { .finder-card { grid-template-columns: 1fr; } section.finder { margin-top: -30px; } }
+.install-link { color: var(--lime) !important; border: 1px solid var(--lime); padding: 6px 12px; border-radius: 999px; }
+.rev-empty { grid-column: 1 / -1; text-align: center; border-style: dashed; }
