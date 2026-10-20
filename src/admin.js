@@ -68,8 +68,17 @@ r.patch('/products/:slug', (req, res) => {
   const price = req.body.price === undefined ? p.price : parseInt(req.body.price, 10);
   if (!(price > 0 && price < 1e6)) return res.status(400).json({ error: 'Bad price' });
   const active = req.body.active === undefined ? p.active : (req.body.active ? 1 : 0);
-  db.run('UPDATE products SET price=?, active=? WHERE slug=?', [price, active, p.slug]);
+  let video = p.video;
+  if (req.body.video !== undefined) {
+    const v = String(req.body.video).trim();
+    const m = v.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
+    if (v && !m) return res.status(400).json({ error: 'Paste a YouTube link (youtube.com or youtu.be)' });
+    video = m ? m[1] : null;
+  }
+  db.run('UPDATE products SET price=?, active=?, video=? WHERE slug=?', [price, active, video, p.slug]);
   res.json(db.parseProduct(db.get('SELECT * FROM products WHERE slug=?', [p.slug])));
 });
+
+r.use('/reviews', require('./reviews').admin);
 
 module.exports = r;

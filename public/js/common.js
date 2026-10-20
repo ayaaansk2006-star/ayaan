@@ -52,3 +52,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-close-cart]').forEach(b => b.onclick = () => d.classList.remove('open'));
   Cart.render();
 });
+
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));

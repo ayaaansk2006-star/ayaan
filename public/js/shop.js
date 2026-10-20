@@ -41,7 +41,7 @@ function renderModels() {
 }
 
 function renderExtras() {
-  const bikes = [...new Set(products.map(p => p.bike.toUpperCase()))].join(' ✦ ') + ' ✦ ';
+  const bikes = [...new Set(products.map(p => p.bike.toUpperCase()))].join('  //  ') + '  //  ';
   $('#marquee').textContent = bikes + bikes;
   const pics = products.flatMap(p => p.images.slice(1, 3));
   $('#masonry').innerHTML = pics.filter((_, i) => i % 2 === 0).slice(0, 10).map(s => `<img loading="lazy" src="${esc(s)}" alt="Altitude Moto install">`).join('');

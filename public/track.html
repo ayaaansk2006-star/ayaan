@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Track Order — Altitude Moto</title><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/style.css?v=3">
+<title>Track Order — Altitude Moto</title><link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=3">
 <style>
 .steps { display: flex; justify-content: space-between; margin: 24px 0; gap: 6px; }
 .steps div { flex: 1; text-align: center; font-size: 12px; color: var(--muted); border-top: 4px solid var(--line); padding-top: 8px; }
 .steps div.done { border-color: var(--lime); color: #fff; }
+.stars { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; font-size: 28px; }
+.stars input { display: none; } .stars label { cursor: pointer; color: #444; }
+.stars label:hover, .stars label:hover ~ label, .stars input:checked + * , .stars label:has(input:checked), .stars label:has(input:checked) ~ label { color: var(--lime); }
 </style>
 </head>
 <body>
@@ -26,7 +29,7 @@
   </form>
   <div id="result" class="panel" style="display:none;margin-top:20px"></div>
 </main>
-<script src="/js/common.js?v=2"></script>
+<script src="/js/common.js?v=5"></script>
 <script>
 const FLOW = ['Payment Verification Pending', 'Payment Confirmed', 'Shipped', 'Delivered'];
 async function track(id, email) {
@@ -42,7 +45,22 @@ async function track(id, email) {
       ${o.items.map(l => `<div class="line"><img src="${esc(l.image)}" alt=""><div><b>${esc(l.title)}</b>
         ${l.addons.map(a => `<br><small class="lime">+ ${esc(a.name)}</small>`).join('')}<br><small>Qty ${l.qty}</small></div>
         <b>${inr(l.lineTotal)}</b></div>`).join('')}
-      <div class="row" style="margin-top:12px"><b>Total</b><b class="lime display">${inr(o.total)}</b></div>`;
+      <div class="row" style="margin-top:12px"><b>Total</b><b class="lime display">${inr(o.total)}</b></div>
+      <a class="btn ghost" style="margin-top:16px;width:100%" target="_blank" rel="noopener"
+        href="https://wa.me/919833731869?text=${encodeURIComponent(`Hi Altitude Moto, my order ${o.id} (${inr(o.total)}). Status: ${o.status}`)}">Message us on WhatsApp about this order</a>
+      ${o.status === 'Delivered' ? `<h3 class="display" style="margin-top:22px">Rate your parts</h3>` + o.items.map(l => `
+        <form class="form rv" data-slug="${esc(l.slug)}" style="margin-top:12px">
+          <b>${esc(l.title)}</b>
+          <div class="stars">${[5,4,3,2,1].map(n => `<label><input type="radio" name="rating" value="${n}" required>★</label>`).join('')}</div>
+          <textarea name="text" rows="2" maxlength="600" required placeholder="How is the fit and finish?"></textarea>
+          <button class="btn">Submit review</button><div class="err"></div></form>`).join('') : ''}`;
+    document.querySelectorAll('form.rv').forEach(f => f.onsubmit = async ev => {
+      ev.preventDefault();
+      try {
+        await api('/api/reviews', { method: 'POST', body: { orderId: id, email, slug: f.dataset.slug, rating: f.rating.value, text: f.text.value } });
+        f.innerHTML = '<p class="lime">Thanks! Your review will appear after a quick check.</p>';
+      } catch (err) { f.querySelector('.err').textContent = err.message; }
+    });
   } catch (e) { $('#err').textContent = e.message; $('#result').style.display = 'none'; }
 }
 const qs = new URLSearchParams(location.search);

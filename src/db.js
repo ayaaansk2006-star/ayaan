@@ -38,6 +38,10 @@ async function init() {
   const cols = all('PRAGMA table_info(orders)').map(c => c.name);
   if (!cols.includes('method')) db.run("ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'");
   if (!cols.includes('rzp_order_id')) db.run('ALTER TABLE orders ADD COLUMN rzp_order_id TEXT');
+  db.run(`CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, order_id TEXT, name TEXT, rating INTEGER,
+    text TEXT, approved INTEGER DEFAULT 0, created_at TEXT, UNIQUE(order_id, slug))`);
+  if (!all('PRAGMA table_info(products)').some(c => c.name === 'video')) db.run('ALTER TABLE products ADD COLUMN video TEXT');
   if (!all('PRAGMA table_info(products)').some(c => c.name === 'seeded_price')) {
     db.run('ALTER TABLE products ADD COLUMN seeded_price INTEGER');
     db.run('UPDATE products SET seeded_price=price');

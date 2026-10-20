@@ -96,3 +96,22 @@ section.why, section.how, section.gallery, section.faq, section.visit { padding:
   .float-wa { bottom: 84px; } .to-top { bottom: 84px; }
 }
 @media (prefers-reduced-motion: reduce) { *, .reveal { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; } }
+
+/* fit finder */
+section.finder { margin-top: -60px; position: relative; z-index: 5; padding-bottom: 30px; }
+.finder-card { display: grid; grid-template-columns: 1.3fr 1fr 1fr auto; gap: 14px; align-items: center; padding: 24px 28px; border-radius: 20px;
+  background: rgba(20,20,20,.85); backdrop-filter: blur(14px); border: 1px solid rgba(223,255,0,.35); box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(223,255,0,.06); }
+.finder-card h2 { font-size: 22px; }
+.finder-card select { background: #0e0e0e; color: #fff; border: 1px solid var(--line); padding: 14px; border-radius: 12px; font: inherit; width: 100%; }
+.finder-card select:focus { outline: none; border-color: var(--lime); }
+.finder-card select:disabled, .finder-card .btn:disabled { opacity: .45; }
+.finder-result { min-height: 24px; margin-top: 12px; color: #ddd; text-align: center; }
+/* reviews + video */
+.rev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 28px; }
+.rev { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 8px; }
+.rev p { color: #ddd; } .rev small { color: var(--muted); }
+#pReviews .rev { padding: 12px; margin-top: 8px; }
+section.reviews { padding: 80px 0; border-top: 1px solid var(--line); }
+.video { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+@media (max-width: 900px) { .finder-card { grid-template-columns: 1fr; } section.finder { margin-top: -30px; } }

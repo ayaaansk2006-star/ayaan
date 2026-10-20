@@ -17,7 +17,15 @@ function openProduct(p) {
     <button class="btn" id="addcart">Add to Cart</button>
     <button class="btn ghost" id="buynow">Buy Now</button>
     <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, I am interested in ' + p.title)}">Ask on WhatsApp</a>
+    ${p.video ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.video)}" title="Install video" allowfullscreen loading="lazy"></iframe></div>` : ''}
+    <div id="pReviews"></div>
   </div>`;
+  api('/api/reviews?slug=' + encodeURIComponent(p.slug)).then(list => {
+    if (!list.length || !$('#pReviews')) return;
+    const avg = list.reduce((s, r) => s + r.rating, 0) / list.length;
+    $('#pReviews').innerHTML = `<h4 style="margin-top:6px"><span class="lime">${stars(Math.round(avg))}</span> ${avg.toFixed(1)} · ${list.length} verified review${list.length > 1 ? 's' : ''}</h4>` +
+      list.slice(0, 5).map(r => `<div class="rev"><div class="lime">${stars(r.rating)}</div><p>${esc(r.text)}</p><small>— ${esc(r.name)}</small></div>`).join('');
+  }).catch(() => {});
   const chosen = () => [...document.querySelectorAll('.addon input:checked')].map(i => i.value);
   const unit = () => p.price + p.addons.filter(a => chosen().includes(a.id)).reduce((s, a) => s + a.price, 0);
   const upd = () => { $('#qv').textContent = qty; $('#mprice').textContent = inr(unit() * qty); };

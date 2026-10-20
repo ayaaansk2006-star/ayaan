@@ -16,6 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use('/api', require('./src/shop'));
+app.use('/api', require('./src/reviews').pub);
 app.use('/api/admin', require('./src/admin'));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { maxAge: '7d' }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
