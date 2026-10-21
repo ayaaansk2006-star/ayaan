@@ -2,16 +2,16 @@ const crypto = require('crypto');
 const db = require('./db');
 
 // Prices are always recomputed server-side from the DB; client totals are never trusted.
-function price(items) {
+async function price(items) {
   if (!Array.isArray(items) || !items.length || items.length > 30) throw new Error('Cart is empty');
-  const lines = items.map(it => {
-    const p = db.parseProduct(db.get('SELECT * FROM products WHERE slug=? AND active=1', [String(it.slug)]));
+  const lines = await Promise.all(items.map(async it => {
+    const p = db.parseProduct(await db.get('SELECT * FROM products WHERE slug=? AND active=1', [String(it.slug)]));
     if (!p) throw new Error('A product in your cart is no longer available');
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const addons = p.addons.filter(a => (it.addons || []).includes(a.id));
     const unit = p.price + addons.reduce((s, a) => s + a.price, 0);
     return { slug: p.slug, title: p.title, qty, unit, addons, lineTotal: unit * qty, image: p.images[0] };
-  });
+  }));
   return { lines, total: lines.reduce((s, l) => s + l.lineTotal, 0) };
 }
 
@@ -30,11 +30,11 @@ function customer(b) {
   return c;
 }
 
-const find = id => db.parseOrder(db.get('SELECT * FROM orders WHERE id=?', [id]));
+const find = async id => db.parseOrder(await db.get('SELECT * FROM orders WHERE id=?', [id]));
 
-function create(c, { lines, total }, { utr = '', status, method }) {
+async function create(c, { lines, total }, { utr = '', status, method }) {
   const id = 'AM' + Date.now().toString(36).toUpperCase() + crypto.randomBytes(2).toString('hex').toUpperCase();
-  db.run(`INSERT INTO orders (id,created_at,name,email,phone,address,city,state,pincode,items,total,utr,notes,status,method)
+  await db.run(`INSERT INTO orders (id,created_at,name,email,phone,address,city,state,pincode,items,total,utr,notes,status,method)
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   [id, new Date().toISOString(), c.name, c.email, c.phone, c.address, c.city, c.state, c.pincode,
     JSON.stringify(lines), total, utr, c.notes, status, method]);

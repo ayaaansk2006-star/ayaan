@@ -8,6 +8,7 @@ if (!process.env.ADMIN_PASSWORD) throw new Error('Set ADMIN_PASSWORD in .env');
 
 const app = express();
 app.set('trust proxy', 1);
+app.use('/api', (req, res, next) => db.init().then(() => next(), next));
 app.use('/api', require('./src/razorpay'));
 app.use(express.json({ limit: '50kb' }));
 app.use((req, res, next) => {
@@ -22,7 +23,11 @@ app.use('/api/admin', require('./src/admin'));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { maxAge: '7d' }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
-db.init().then(() => {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Altitude Moto running on :${port}`));
-});
+// Vercel imports the app; Railway/local run this file directly.
+if (require.main === module) {
+  db.init().then(() => {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => console.log(`Altitude Moto running on :${port}`));
+  });
+}
+module.exports = app;

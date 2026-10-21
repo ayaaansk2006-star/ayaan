@@ -43,27 +43,27 @@ r.use((req, res, next) => valid(cookie(req)) ? next() : res.status(401).json({ e
 
 r.get('/me', (req, res) => res.json({ ok: true, statuses: STATUSES }));
 
-r.get('/orders', (req, res) => {
-  res.json(db.all('SELECT * FROM orders ORDER BY created_at DESC').map(db.parseOrder));
+r.get('/orders', async (req, res) => {
+  res.json((await db.all('SELECT * FROM orders ORDER BY created_at DESC')).map(db.parseOrder));
 });
 
-r.patch('/orders/:id', (req, res) => {
+r.patch('/orders/:id', async (req, res) => {
   const { status } = req.body;
   if (!STATUSES.includes(status)) return res.status(400).json({ error: 'Bad status' });
-  const before = db.get('SELECT status FROM orders WHERE id=?', [req.params.id]);
+  const before = await db.get('SELECT status FROM orders WHERE id=?', [req.params.id]);
   if (!before) return res.status(404).json({ error: 'Not found' });
-  db.run('UPDATE orders SET status=? WHERE id=?', [status, req.params.id]);
-  const o = db.parseOrder(db.get('SELECT * FROM orders WHERE id=?', [req.params.id]));
-  if (before.status !== status) mail.statusChanged(o);
+  await db.run('UPDATE orders SET status=? WHERE id=?', [status, req.params.id]);
+  const o = db.parseOrder(await db.get('SELECT * FROM orders WHERE id=?', [req.params.id]));
+  if (before.status !== status) await mail.statusChanged(o);
   res.json(o);
 });
 
-r.get('/products', (req, res) => {
-  res.json(db.all('SELECT * FROM products ORDER BY sort').map(db.parseProduct));
+r.get('/products', async (req, res) => {
+  res.json((await db.all('SELECT * FROM products ORDER BY sort')).map(db.parseProduct));
 });
 
-r.patch('/products/:slug', (req, res) => {
-  const p = db.get('SELECT * FROM products WHERE slug=?', [req.params.slug]);
+r.patch('/products/:slug', async (req, res) => {
+  const p = await db.get('SELECT * FROM products WHERE slug=?', [req.params.slug]);
   if (!p) return res.status(404).json({ error: 'Not found' });
   const price = req.body.price === undefined ? p.price : parseInt(req.body.price, 10);
   if (!(price > 0 && price < 1e6)) return res.status(400).json({ error: 'Bad price' });
@@ -76,8 +76,8 @@ r.patch('/products/:slug', (req, res) => {
     if (v && !ig && !yt) return res.status(400).json({ error: 'Paste an Instagram reel link or a YouTube link' });
     video = ig ? 'ig:' + ig[1] : yt ? yt[1] : null;
   }
-  db.run('UPDATE products SET price=?, active=?, video=? WHERE slug=?', [price, active, video, p.slug]);
-  res.json(db.parseProduct(db.get('SELECT * FROM products WHERE slug=?', [p.slug])));
+  await db.run('UPDATE products SET price=?, active=?, video=? WHERE slug=?', [price, active, video, p.slug]);
+  res.json(db.parseProduct(await db.get('SELECT * FROM products WHERE slug=?', [p.slug])));
 });
 
 r.use('/reviews', require('./reviews').admin);
