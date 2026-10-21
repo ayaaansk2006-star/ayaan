@@ -17,11 +17,11 @@ function orderHtml(o, heading) {
     <td style="padding:8px;border-bottom:1px solid #333">× ${i.qty}</td>
     <td style="padding:8px;border-bottom:1px solid #333;text-align:right">${inr(i.lineTotal)}</td></tr>`).join('');
   return `<div style="background:#0b0b0b;color:#eee;font-family:Arial,sans-serif;padding:24px">
-  <div style="max-width:600px;margin:auto;background:#151515;border:1px solid #DFFF00;border-radius:12px;padding:24px">
-  <h1 style="color:#DFFF00;margin:0 0 4px;letter-spacing:2px">ALTITUDE MOTO</h1>
+  <div style="max-width:600px;margin:auto;background:#151515;border:1px solid #FEF502;border-radius:12px;padding:24px">
+  <h1 style="color:#FEF502;margin:0 0 4px;letter-spacing:2px">ALTITUDE MOTO</h1>
   <h2 style="margin:0 0 16px">${esc(heading)}</h2>
   <p>Hi ${esc(o.name)},</p>
-  <p>Order <b style="color:#DFFF00">${esc(o.id)}</b> — Status: <b>${esc(o.status)}</b></p>
+  <p>Order <b style="color:#FEF502">${esc(o.id)}</b> — Status: <b>${esc(o.status)}</b></p>
   <table style="width:100%;border-collapse:collapse;color:#eee">${rows}
   <tr><td colspan="2" style="padding:8px"><b>Total</b></td><td style="padding:8px;text-align:right"><b>${inr(o.total)}</b></td></tr></table>
   <p><b>Payment:</b> ${esc(o.method)} — ${esc(o.utr)}</p>

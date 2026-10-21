@@ -19,11 +19,12 @@ body { overflow-x: hidden; }
   background: linear-gradient(90deg, rgba(10,10,10,.97) 0%, rgba(10,10,10,.8) 45%, rgba(10,10,10,.35) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 30%); }
 .hero-in { position: relative; z-index: 2; padding: 80px 20px; width: 100%; }
 .hero2 h1 { font-family: 'Archivo Black', Inter, sans-serif; font-size: clamp(44px, 8vw, 96px); line-height: .95; text-transform: uppercase; margin: 18px 0; }
-.hero2 h1 .lime { text-shadow: 0 0 40px rgba(223,255,0,.35); }
+.hero2 h1 .lime { text-shadow: 0 0 6px #fff7a0, 0 0 14px rgba(254,245,2,.95), 0 0 32px rgba(254,245,2,.75), 0 0 64px rgba(254,245,2,.5), 0 0 110px rgba(254,245,2,.3); animation: neon 3s ease-in-out infinite; }
+.stats div b, .section-title .lime { text-shadow: 0 0 6px rgba(254,245,2,.9), 0 0 20px rgba(254,245,2,.6), 0 0 44px rgba(254,245,2,.35); }
 .hero2 p { color: #c9c9c9; font-size: 19px; max-width: 520px; margin-bottom: 30px; }
 .cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .tag.pulse { animation: glow 2.5s infinite; }
-@keyframes glow { 50% { box-shadow: 0 0 18px rgba(223,255,0,.45); } }
+@keyframes glow { 50% { box-shadow: 0 0 18px rgba(254,245,2,.45); } }
 .scroll-hint { position: absolute; bottom: 26px; left: 50%; z-index: 2; width: 26px; height: 42px; border: 2px solid #777; border-radius: 14px; transform: translateX(-50%); }
 .scroll-hint span { position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px; background: var(--lime); border-radius: 2px; animation: wheel 1.6s infinite; }
 @keyframes wheel { to { transform: translateY(14px); opacity: 0; } }
@@ -51,8 +52,8 @@ body { overflow-x: hidden; }
 section.why, section.how, section.gallery, section.faq, section.visit { padding: 80px 0; border-top: 1px solid var(--line); }
 .feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-top: 30px; }
 .feat > div { background: linear-gradient(160deg, #181818, #0f0f0f); border: 1px solid var(--line); border-radius: 18px; padding: 26px; transition: .3s; }
-.feat > div:hover { border-color: var(--lime); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(223,255,0,.06); }
-.feat i { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 14px; background: rgba(223,255,0,.1); margin-bottom: 16px; }
+.feat > div:hover { border-color: var(--lime); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(254,245,2,.06); }
+.feat i { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 14px; background: rgba(254,245,2,.1); margin-bottom: 16px; }
 .feat svg { width: 26px; height: 26px; fill: none; stroke: var(--lime); stroke-width: 2; }
 .feat h3 { margin-bottom: 6px; } .feat p, .steps3 p { color: var(--muted); font-size: 14px; }
 .steps3 { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 30px; counter-reset: s; }
@@ -68,7 +69,7 @@ section.why, section.how, section.gallery, section.faq, section.visit { padding:
 .faq details[open] { border-color: var(--lime); }
 .faq details p { padding: 0 22px 18px; color: var(--muted); }
 .visit-card { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 30px; padding: 44px; border-radius: 24px; border: 1px solid var(--lime);
-  background: radial-gradient(circle at 90% 50%, rgba(223,255,0,.15), transparent 60%), var(--card); }
+  background: radial-gradient(circle at 90% 50%, rgba(254,245,2,.15), transparent 60%), var(--card); }
 .visit-card p { color: var(--muted); margin: 10px 0 22px; }
 .visit-logo { width: 100%; max-width: 240px; margin: auto; border-radius: 24px; animation: float 5s ease-in-out infinite; }
 
@@ -100,7 +101,7 @@ section.why, section.how, section.gallery, section.faq, section.visit { padding:
 /* fit finder */
 section.finder { margin-top: -60px; position: relative; z-index: 5; padding-bottom: 30px; }
 .finder-card { display: grid; grid-template-columns: 1.3fr 1fr 1fr auto; gap: 14px; align-items: center; padding: 24px 28px; border-radius: 20px;
-  background: rgba(20,20,20,.85); backdrop-filter: blur(14px); border: 1px solid rgba(223,255,0,.35); box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(223,255,0,.06); }
+  background: rgba(20,20,20,.85); backdrop-filter: blur(14px); border: 1px solid rgba(254,245,2,.35); box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(254,245,2,.06); }
 .finder-card h2 { font-size: 22px; }
 .finder-card select { background: #0e0e0e; color: #fff; border: 1px solid var(--line); padding: 14px; border-radius: 12px; font: inherit; width: 100%; }
 .finder-card select:focus { outline: none; border-color: var(--lime); }
