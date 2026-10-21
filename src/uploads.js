@@ -32,6 +32,7 @@ r.post('/uploads/blob', express.json(), async (req, res) => {
 
 r.post('/uploads', express.raw({ type: Object.keys(TYPES), limit: MAX.video }), async (req, res) => {
   if (BLOB) return res.status(404).end();
+  if (process.env.VERCEL) return res.status(503).json({ error: 'Photo/video upload is not set up yet. You can post your review without photos for now.' });
   try {
     await order.delivered(req.query.orderId, req.query.email);
     const type = req.get('content-type'), ext = TYPES[type];
