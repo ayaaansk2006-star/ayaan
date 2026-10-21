@@ -17,10 +17,11 @@ r.get('/products', async (req, res) => {
 r.post('/quote', async (req, res) => {
   try {
     const q = await order.price(req.body.items, req.body.pincode);
-    const base = process.env.UPI_QR_PAYLOAD || `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}`;
+    // Keep the merchant payload byte-for-byte (apps are picky); only swap in this order's amount.
+    const base = (process.env.UPI_QR_PAYLOAD || `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}`).replace(/([?&])(am|cu)=[^&]*&?/g, '$1').replace(/&$/, '');
     const upiLink = `${base}&am=${q.total}.00&cu=INR`;
     const qr = await QRCode.toDataURL(upiLink, { width: 480, margin: 2, errorCorrectionLevel: 'M' });
-    res.json({ ...q, upiId: UPI_ID, upiLink, qr, razorpay: rzp.enabled });
+    res.json({ ...q, upiId: (base.match(/[?&]pa=([^&]+)/) || [])[1] || UPI_ID, upiLink, qr, razorpay: rzp.enabled });
   } catch (e) { res.status(400).json({ error: e.message }); }
 });
 
