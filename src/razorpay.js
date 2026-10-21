@@ -19,7 +19,10 @@ async function markPaid(rzpOrderId, paymentId) {
   const o = await db.get('SELECT id, status FROM orders WHERE rzp_order_id=?', [rzpOrderId]);
   if (!o) return null;
   if (o.status === 'Awaiting Payment') {
-    await db.run("UPDATE orders SET status='Payment Confirmed', utr=? WHERE id=?", [paymentId, o.id]);
+    // Test-mode keys accept fake payments, so those orders never auto-confirm.
+    const test = KEY_ID.startsWith('rzp_test_');
+    await db.run('UPDATE orders SET status=?, utr=?, method=? WHERE id=?',
+      [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : 'Razorpay', o.id]);
     await mail.orderPlaced(await order.find(o.id));
   }
   return o.id;
