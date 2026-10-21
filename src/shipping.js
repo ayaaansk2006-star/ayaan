@@ -1,7 +1,7 @@
 // Courier charge per order, by Indian pincode prefix (India Post zones). First match wins, so specific prefixes come first.
 // ponytail: prefix ranges are approximate at district borders; swap for a full pincode table if a customer is mis-charged.
 const RULES = [
-  [/^(400|401|421)/, 100, 'Mumbai / Thane / Mumbra'],
+  [/^(400|401|421)/, 1, 'Mumbai / Thane / Mumbra'], // ponytail: ₹1 test price, set back to 100 after testing
   [/^403/, 200, 'Goa'],
   [/^4[0-4]/, 150, 'Maharashtra'],
   [/^3[6-9]/, 250, 'Gujarat'],
