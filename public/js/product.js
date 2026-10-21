@@ -17,7 +17,7 @@ function openProduct(p) {
     <button class="btn" id="addcart">Add to Cart</button>
     <button class="btn ghost" id="buynow">Buy Now</button>
     <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, I am interested in ' + p.title)}">Ask on WhatsApp</a>
-    ${p.video ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.video)}" title="Install video" allowfullscreen loading="lazy"></iframe></div>` : ''}
+    ${p.video ? '<h4 style="margin-top:6px">Watch it fitted</h4>' + videoEmbed(p.video) : ''}
     <div id="pReviews"></div>
   </div>`;
   api('/api/reviews?slug=' + encodeURIComponent(p.slug)).then(list => {

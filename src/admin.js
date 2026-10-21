@@ -71,14 +71,16 @@ r.patch('/products/:slug', (req, res) => {
   let video = p.video;
   if (req.body.video !== undefined) {
     const v = String(req.body.video).trim();
-    const m = v.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
-    if (v && !m) return res.status(400).json({ error: 'Paste a YouTube link (youtube.com or youtu.be)' });
-    video = m ? m[1] : null;
+    const ig = v.match(/instagram\.com\/(?:reels?|p)\/([\w-]{5,40})/);
+    const yt = v.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
+    if (v && !ig && !yt) return res.status(400).json({ error: 'Paste an Instagram reel link or a YouTube link' });
+    video = ig ? 'ig:' + ig[1] : yt ? yt[1] : null;
   }
   db.run('UPDATE products SET price=?, active=?, video=? WHERE slug=?', [price, active, video, p.slug]);
   res.json(db.parseProduct(db.get('SELECT * FROM products WHERE slug=?', [p.slug])));
 });
 
 r.use('/reviews', require('./reviews').admin);
+r.use('/reels', require('./reels').admin);
 
 module.exports = r;

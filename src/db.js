@@ -41,6 +41,7 @@ async function init() {
   db.run(`CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, order_id TEXT, name TEXT, rating INTEGER,
     text TEXT, approved INTEGER DEFAULT 0, created_at TEXT, UNIQUE(order_id, slug))`);
+  db.run('CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, caption TEXT, created_at TEXT)');
   if (!all('PRAGMA table_info(products)').some(c => c.name === 'video')) db.run('ALTER TABLE products ADD COLUMN video TEXT');
   if (!all('PRAGMA table_info(products)').some(c => c.name === 'seeded_price')) {
     db.run('ALTER TABLE products ADD COLUMN seeded_price INTEGER');

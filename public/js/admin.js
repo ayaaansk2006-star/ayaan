@@ -1,4 +1,4 @@
-let statuses = [], orders = [], products = [], reviews = [], tab = 'orders';
+let statuses = [], orders = [], products = [], reviews = [], reels = [], tab = 'orders';
 
 async function boot() {
   try {
@@ -9,7 +9,7 @@ async function boot() {
 }
 
 async function load() {
-  [orders, products, reviews] = await Promise.all([api('/api/admin/orders'), api('/api/admin/products'), api('/api/admin/reviews')]);
+  [orders, products, reviews, reels] = await Promise.all(['orders', 'products', 'reviews', 'reels'].map(x => api('/api/admin/' + x)));
   const paid = orders.filter(o => !['Awaiting Payment', 'Payment Verification Pending', 'Cancelled'].includes(o.status));
   $('#kpis').innerHTML = [
     ['Total orders', orders.length],
@@ -38,6 +38,16 @@ function render() {
       await api('/api/admin/orders/' + s.dataset.id, { method: 'PATCH', body: { status: s.value } });
       toast('Updated & customer emailed'); load();
     });
+  } else if (tab === 'videos') {
+    $('#view').innerHTML = `<form class="form" id="reelForm" style="margin-bottom:18px"><b>Add an Instagram reel to the homepage</b>
+      <div class="two"><input name="url" required placeholder="https://www.instagram.com/reel/..."><input name="caption" maxlength="120" placeholder="Caption (optional), e.g. Speed 400 GPS mount fitted"></div>
+      <button class="btn">Add reel</button><div class="err" id="rerr"></div></form>
+      ${reels.length ? `<table><tr><th>Reel</th><th>Caption</th><th></th></tr>${reels.map(r => `<tr><td><a class="lime" target="_blank" rel="noopener" href="https://www.instagram.com/reel/${esc(r.code)}/">instagram.com/reel/${esc(r.code)}</a></td>
+        <td>${esc(r.caption || '')}</td><td><button class="btn ghost" style="padding:8px 12px" data-rdel="${r.id}">Remove</button></td></tr>`).join('')}</table>` : '<p>No reels yet. Open a reel on Instagram, tap Share, then Copy link, and paste it above.</p>'}`;
+    $('#reelForm').onsubmit = async e => { e.preventDefault();
+      try { await api('/api/admin/reels', { method: 'POST', body: { url: e.target.url.value, caption: e.target.caption.value } }); toast('Reel added'); load(); }
+      catch (err) { $('#rerr').textContent = err.message; } };
+    document.querySelectorAll('[data-rdel]').forEach(b => b.onclick = async () => { if (confirm('Remove this reel from the website?')) { await api('/api/admin/reels/' + b.dataset.rdel, { method: 'DELETE' }); load(); } });
   } else if (tab === 'reviews') {
     $('#view').innerHTML = reviews.length ? `<table><tr><th>Product</th><th>Review</th><th>Status</th><th></th></tr>${reviews.map(r => `<tr>
       <td>${esc((products.find(p => p.slug === r.slug) || {}).title || r.slug)}<br><small>${esc(r.order_id)}</small></td>
@@ -49,11 +59,11 @@ function render() {
     document.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { if (confirm('Delete this review?')) { await api('/api/admin/reviews/' + b.dataset.del, { method: 'DELETE' }); load(); } });
   } else {
     const list = products.filter(p => !q || (p.title + p.bike).toLowerCase().includes(q));
-    $('#view').innerHTML = `<table><tr><th></th><th>Product</th><th>Price (₹)</th><th>Install video (YouTube link)</th><th>Visible</th><th></th></tr>
+    $('#view').innerHTML = `<table><tr><th></th><th>Product</th><th>Price (₹)</th><th>Video (Instagram reel or YouTube link)</th><th>Visible</th><th></th></tr>
     ${list.map(p => `<tr><td><img src="${esc(p.images[0])}" style="width:56px;height:56px;object-fit:cover;border-radius:8px"></td>
       <td><b>${esc(p.title)}</b><br><small>${esc(p.compat)}</small></td>
       <td><input class="pin" type="number" min="1" value="${p.price}" data-slug="${esc(p.slug)}"></td>
-      <td><input class="pin" style="width:220px" placeholder="https://youtu.be/..." value="${p.video ? 'https://youtu.be/' + esc(p.video) : ''}" data-vid="${esc(p.slug)}"></td>
+      <td><input class="pin" style="width:220px" placeholder="https://www.instagram.com/reel/..." value="${p.video ? esc(videoUrl(p.video)) : ''}" data-vid="${esc(p.slug)}"></td>
       <td><input type="checkbox" ${p.active ? 'checked' : ''} data-act="${esc(p.slug)}"></td>
       <td><button class="btn" style="padding:8px 14px" data-save="${esc(p.slug)}">Save</button></td></tr>`).join('')}</table>`;
     document.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {

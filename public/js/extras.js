@@ -53,5 +53,12 @@ $('#installApp').onclick = installApp; $('#installHero').onclick = installApp;
 
 const waitProducts = setInterval(() => {
   if (!products.length) return;
-  clearInterval(waitProducts); initFinder(); initReviews();
+  clearInterval(waitProducts); initFinder(); initReviews(); initReels();
 }, 100);
+
+async function initReels() {
+  const list = await api('/api/reels').catch(() => []);
+  if (!list.length) return;
+  $('#reelGrid').innerHTML = list.map(r => `<figure class="reveal">${videoEmbed('ig:' + r.code)}${r.caption ? `<figcaption>${esc(r.caption)}</figcaption>` : ''}</figure>`).join('');
+  observeReveal();
+}

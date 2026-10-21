@@ -54,3 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+
+// Video value is "ig:<code>" for Instagram reels, otherwise a YouTube id.
+const videoUrl = v => v.startsWith('ig:') ? 'https://www.instagram.com/reel/' + v.slice(3) + '/' : 'https://youtu.be/' + v;
+const videoEmbed = v => v.startsWith('ig:')
+  ? `<div class="video reel"><iframe src="https://www.instagram.com/reel/${encodeURIComponent(v.slice(3))}/embed" title="Instagram reel" loading="lazy" allowfullscreen scrolling="no"></iframe></div>`
+  : `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v)}" title="Install video" loading="lazy" allowfullscreen></iframe></div>`;
