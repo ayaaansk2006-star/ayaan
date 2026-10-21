@@ -7,7 +7,9 @@ const order = require('./order');
 // Review photos/videos. Vercel: browser uploads straight to Vercel Blob (functions cap bodies at 4.5 MB).
 // Railway/local: the file is posted here and stored under DATA_DIR/uploads (the persistent volume).
 const r = express.Router();
-const BLOB = !!process.env.BLOB_READ_WRITE_TOKEN;
+// Vercel names the key BLOB_READ_WRITE_TOKEN, or <PREFIX>_READ_WRITE_TOKEN if a custom prefix was chosen when connecting.
+const TOKEN = process.env.BLOB_READ_WRITE_TOKEN || Object.entries(process.env).find(([k]) => /_READ_WRITE_TOKEN$/.test(k))?.[1];
+const BLOB = !!TOKEN;
 const DIR = path.join(process.env.DATA_DIR || path.join(__dirname, '..', 'data'), 'uploads');
 const TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
 const MAX = { image: 5 * 1024 * 1024, video: 20 * 1024 * 1024 };
@@ -20,7 +22,7 @@ r.post('/uploads/blob', express.json(), async (req, res) => {
   const { handleUpload } = require('@vercel/blob/client');
   try {
     res.json(await handleUpload({
-      request: req, body: req.body,
+      request: req, body: req.body, token: TOKEN,
       onBeforeGenerateToken: async (pathname, payload) => {
         const { orderId, email } = JSON.parse(payload || '{}');
         await order.delivered(orderId, email);
