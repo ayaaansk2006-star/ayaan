@@ -6,10 +6,18 @@ function openProduct(p) {
   $('#modal-box').innerHTML = `<button class="close" id="mclose" aria-label="Close">×</button>
   <div class="gallery"><div class="main" style="position:relative">
     ${p.images.length > 1 ? '<button class="nav-arrow" id="prev" style="left:10px">‹</button><button class="nav-arrow" id="next" style="right:10px">›</button>' : ''}
-    <img id="mainimg" src="${esc(p.images[0])}" alt="${esc(p.title)}"></div>
-    <div class="thumbs">${p.images.map((s, i) => `<img src="${esc(s)}" data-i="${i}" class="${i ? '' : 'on'}" alt="">`).join('')}</div></div>
+    <div class="blur" id="blurimg" style="background-image:url('${esc(p.images[0])}')"></div>
+    <img id="mainimg" src="${esc(p.images[0])}" alt="${esc(p.title)}"><span class="count-pill" id="pcount">1 / ${p.images.length}</span></div>
+    <div class="thumbs">${p.images.map((s, i) => `<img src="${esc(s)}" data-i="${i}" class="${i ? '' : 'on'}" alt="">`).join('')}</div>
+    <div class="specs"><h4>Product details</h4><dl>
+      <dt>Fits</dt><dd>${esc(p.bike)}</dd>
+      <dt>Windshield</dt><dd>${esc(p.compat)}</dd>
+      <dt>What you get</dt><dd>${p.title.includes('Kit') ? 'GPS mount + Hero Xpulse 210 windshield (sold together as a kit)' : 'GPS mount'}${p.addons.length ? '<br><small>Optional: ' + p.addons.map(a => esc(a.name) + ' (+' + inr(a.price) + ')').join(', ') + '</small>' : ''}</dd>
+      <dt>Price</dt><dd>${esc(p.mrp_breakdown)}</dd>
+      <dt>Fitting</dt><dd>Get it fitted at our garage, or WhatsApp us for help</dd>
+      <dt>Help</dt><dd>WhatsApp <a class="lime" href="https://wa.me/919833731869" target="_blank" rel="noopener">+91 98337 31869</a> to confirm fitment before you buy</dd>
+    </dl></div></div>
   <div class="detail"><span class="tag">${esc(p.bike)}</span><h2>${esc(p.title)}</h2>
-    <p style="color:var(--muted)">${esc(p.compat)}</p>
     <div class="display lime" style="font-size:32px" id="mprice">${inr(p.price)}</div>
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
     ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
@@ -32,7 +40,8 @@ function openProduct(p) {
   const upd = () => { $('#qv').textContent = qty; $('#mprice').textContent = inr(unit() * qty); };
   const show = i => {
     at = (i + p.images.length) % p.images.length;
-    $('#mainimg').src = p.images[at];
+    $('#mainimg').src = p.images[at]; $('#blurimg').style.backgroundImage = `url('${p.images[at]}')`;
+    $('#pcount').textContent = `${at + 1} / ${p.images.length}`;
     document.querySelectorAll('.thumbs img').forEach((t, j) => t.classList.toggle('on', j === at));
   };
   const add = () => Cart.add({ slug: p.slug, title: p.title, image: p.images[0], qty, unit: unit(), addons: chosen(),

@@ -106,15 +106,7 @@ footer.site a:hover { color: var(--lime); }
 .card .price, .display.lime, .kpis .panel b { font-family: Inter, sans-serif !important; font-weight: 800; }
 .form label.addon { display: flex; color: #f2f2f2; font-size: 15px; }
 
-/* Neon glow in the logo yellow */
-:root { --glow: 0 0 6px rgba(254,245,2,.55), 0 0 18px rgba(254,245,2,.35); }
-.lime, .brand, .eyebrow, .price, .tag { text-shadow: var(--glow); }
-.section-title .lime, .hero2 h1 .lime, h1.lime, .display.lime, .finder-card h2 .lime {
-  text-shadow: 0 0 8px rgba(254,245,2,.8), 0 0 22px rgba(254,245,2,.55), 0 0 48px rgba(254,245,2,.35);
-  animation: neon 3s ease-in-out infinite; }
-@keyframes neon { 0%, 100% { opacity: 1; } 45% { opacity: .92; } 50% { opacity: .78; } 55% { opacity: .95; } }
-.brand img, .visit-logo, .logo-big { filter: drop-shadow(0 0 10px rgba(254,245,2,.45)); }
-.btn:not(.ghost), .cart-btn { box-shadow: 0 0 14px rgba(254,245,2,.45), 0 0 34px rgba(254,245,2,.18); }
-.btn.ghost, .tag, .install-link { box-shadow: 0 0 10px rgba(254,245,2,.25), inset 0 0 8px rgba(254,245,2,.12); }
-.marquee { box-shadow: 0 0 24px rgba(254,245,2,.45); }
-@media (prefers-reduced-motion: reduce) { .lime { animation: none !important; } }
+/* Soft glow in the logo yellow (kept subtle for readability) */
+.brand img, .visit-logo, .logo-big { filter: drop-shadow(0 0 6px rgba(254,245,2,.25)); }
+.btn:not(.ghost), .cart-btn { box-shadow: 0 4px 14px rgba(254,245,2,.18); }
+.hero2 h1 .lime { text-shadow: 0 0 18px rgba(254,245,2,.25); }
