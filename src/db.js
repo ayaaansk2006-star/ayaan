@@ -4,13 +4,17 @@ const { createClient } = require('@libsql/client');
 const catalog = require('./catalog');
 
 // Turso (hosted SQLite) when TURSO_DATABASE_URL is set, e.g. on Vercel; otherwise a local file (Railway volume / dev).
-let url = process.env.TURSO_DATABASE_URL;
-if (!url) {
-  const dir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
-  fs.mkdirSync(dir, { recursive: true });
-  url = 'file:' + path.join(dir, 'store.db');
+let client;
+function connect() {
+  let url = process.env.TURSO_DATABASE_URL;
+  if (!url && process.env.VERCEL) throw new Error('Database not connected: add Turso in Vercel > Storage, then redeploy');
+  if (!url) {
+    const dir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
+    fs.mkdirSync(dir, { recursive: true });
+    url = 'file:' + path.join(dir, 'store.db');
+  }
+  client = createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN });
 }
-const client = createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN });
 
 async function all(sql, params = []) {
   const r = await client.execute({ sql, args: params.map(v => v ?? null) });
@@ -21,6 +25,7 @@ const run = (sql, params = []) => client.execute({ sql, args: params.map(v => v 
 const cols = async t => (await all(`PRAGMA table_info(${t})`)).map(c => c.name);
 
 async function setup() {
+  connect();
   await run(`CREATE TABLE IF NOT EXISTS products (
     slug TEXT PRIMARY KEY, bike TEXT, brand TEXT, title TEXT, compat TEXT, price INTEGER,
     mrp_breakdown TEXT, note TEXT, addons TEXT, images TEXT, active INTEGER DEFAULT 1, sort INTEGER)`);

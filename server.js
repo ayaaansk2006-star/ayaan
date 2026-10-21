@@ -3,10 +3,14 @@ const express = require('express');
 const path = require('path');
 const db = require('./src/db');
 
-if (!process.env.UPI_ID) throw new Error('Set UPI_ID in .env (e.g. 9833731869@okaxis)');
-if (!process.env.ADMIN_PASSWORD) throw new Error('Set ADMIN_PASSWORD in .env');
-
 const app = express();
+// SESSION_SECRET is required on Vercel: each serverless instance would otherwise invent its own and log admins out.
+const missing = ['UPI_ID', 'ADMIN_PASSWORD', ...(process.env.VERCEL ? ['SESSION_SECRET'] : [])].filter(k => !process.env[k]);
+if (missing.length && !process.env.VERCEL) throw new Error('Set in .env: ' + missing.join(', '));
+// On Vercel a missing setting shows a clear message instead of crashing the whole site.
+app.use((req, res, next) => missing.length && process.env.VERCEL
+  ? res.status(500).send('Setup incomplete. Add these in Vercel > Settings > Environment Variables, then redeploy: ' + missing.join(', '))
+  : next());
 app.set('trust proxy', 1);
 app.use('/api', (req, res, next) => db.init().then(() => next(), next));
 app.use('/api', require('./src/razorpay'));
@@ -30,4 +34,5 @@ if (require.main === module) {
     app.listen(port, () => console.log(`Altitude Moto running on :${port}`));
   });
 }
+app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: err.message.startsWith('Database not connected') ? err.message : 'Server error' }); });
 module.exports = app;
