@@ -23,7 +23,9 @@ function orderHtml(o, heading) {
   <p>Hi ${esc(o.name)},</p>
   <p>Order <b style="color:#FEF502">${esc(o.id)}</b> — Status: <b>${esc(o.status)}</b></p>
   <table style="width:100%;border-collapse:collapse;color:#eee">${rows}
+  ${o.shipping ? `<tr><td colspan="2" style="padding:8px">Courier</td><td style="padding:8px;text-align:right">${inr(o.shipping)}</td></tr>` : ''}
   <tr><td colspan="2" style="padding:8px"><b>Total</b></td><td style="padding:8px;text-align:right"><b>${inr(o.total)}</b></td></tr></table>
+  ${o.notes ? `<p><b>Bike:</b> ${esc(o.notes)}</p>` : ''}
   <p><b>Payment:</b> ${esc(o.method)} — ${esc(o.utr)}</p>
   <p><b>Ship to:</b><br>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} - ${esc(o.pincode)}<br>Phone: ${esc(o.phone)}</p>
   <p style="color:#aaa;font-size:13px">You will get an email whenever your order status changes. Questions? Call/WhatsApp +91 98337 31869 / +91 79777 19218 or reply to altitudemotoindia@gmail.com</p>

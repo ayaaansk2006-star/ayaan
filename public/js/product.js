@@ -13,6 +13,7 @@ function openProduct(p) {
       <dt>Fits</dt><dd>${esc(p.bike)}</dd>
       <dt>Windshield</dt><dd>${esc(p.compat)}</dd>
       <dt>What you get</dt><dd>${p.title.includes('Kit') ? 'GPS mount + Hero Xpulse 210 windshield (sold together as a kit)' : 'GPS mount'}${p.addons.length ? '<br><small>Optional: ' + p.addons.map(a => esc(a.name) + ' (+' + inr(a.price) + ')').join(', ') + '</small>' : ''}</dd>
+      <dt>Hardware</dt><dd>All bushes, nuts and bolts included</dd>
       <dt>Price</dt><dd>${esc(p.mrp_breakdown)}</dd>
       <dt>Fitting</dt><dd>Get it fitted at our garage, or WhatsApp us for help</dd>
       <dt>Help</dt><dd>WhatsApp <a class="lime" href="https://wa.me/919833731869" target="_blank" rel="noopener">+91 98337 31869</a> to confirm fitment before you buy</dd>

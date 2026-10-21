@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Reviews — Altitude Moto</title><link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=7">
+<style>
+.rv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 20px; align-items: start; }
+.rv { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.rv .media { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.rv .media img, .rv .media video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #000; }
+.rv .media a:only-child, .rv .media video:only-child { grid-column: 1 / -1; }
+.rv small, .muted { color: var(--muted); }
+.pick { display: flex; gap: 6px; } .pick button { background: none; border: 0; color: #555; cursor: pointer; padding: 2px; }
+.pick button.on { color: var(--lime); }
+.prev { display: flex; gap: 8px; flex-wrap: wrap; } .prev img, .prev video { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png?v=2" alt="">ALTITUDE MOTO</a>
+  <nav class="links"><a href="/">Shop</a><a href="/track">Track Order</a><a href="/account">Account</a></nav>
+</div></header>
+<main class="wrap" style="padding:50px 20px">
+  <h1 class="display">Customer <span class="lime">reviews</span></h1>
+  <p class="muted">Real photos and videos from riders who bought from us. Only customers with a delivered order can post.</p>
+  <div class="rv-grid" id="list"></div>
+
+  <section class="panel" style="max-width:720px;margin:40px auto 0" id="write">
+    <h2 class="display">Write a review</h2>
+    <form class="form" id="find">
+      <div class="two"><label>Order ID<input name="oid" required></label><label>Email used for the order<input name="email" type="email" required></label></div>
+      <button class="btn">Find my order</button><div class="err" id="ferr"></div>
+    </form>
+    <div id="forms"></div>
+  </section>
+</main>
+<script src="/js/common.js?v=6"></script>
+<script src="/js/review.js?v=1"></script>
+</body>
+</html>

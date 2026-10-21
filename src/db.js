@@ -36,9 +36,15 @@ async function setup() {
   const oc = await cols('orders');
   if (!oc.includes('method')) await run("ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'");
   if (!oc.includes('rzp_order_id')) await run('ALTER TABLE orders ADD COLUMN rzp_order_id TEXT');
+  if (!oc.includes('user_id')) await run('ALTER TABLE orders ADD COLUMN user_id INTEGER');
+  if (!oc.includes('shipping')) await run('ALTER TABLE orders ADD COLUMN shipping INTEGER DEFAULT 0');
   await run(`CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, order_id TEXT, name TEXT, rating INTEGER,
     text TEXT, approved INTEGER DEFAULT 0, created_at TEXT, UNIQUE(order_id, slug))`);
+  if (!(await cols('reviews')).includes('media')) await run("ALTER TABLE reviews ADD COLUMN media TEXT DEFAULT '[]'");
+  await run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, pass TEXT, name TEXT, phone TEXT,
+    address TEXT, city TEXT, state TEXT, pincode TEXT, created_at TEXT)`);
   await run('CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, caption TEXT, created_at TEXT)');
   const pc = await cols('products');
   if (!pc.includes('video')) await run('ALTER TABLE products ADD COLUMN video TEXT');

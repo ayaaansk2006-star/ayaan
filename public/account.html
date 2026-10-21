@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Account — Altitude Moto</title><link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=7">
+<style>
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tabs button { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: none; color: #fff; font: inherit; cursor: pointer; }
+.tabs button.on { background: var(--lime); color: #000; font-weight: 700; border-color: var(--lime); }
+.ord { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png?v=2" alt="">ALTITUDE MOTO</a>
+  <nav class="links"><a href="/">Shop</a><a href="/track">Track Order</a><a href="/review">Reviews</a></nav>
+</div></header>
+<main class="wrap" style="max-width:720px;padding:50px 20px">
+  <div id="guest" class="panel" style="display:none">
+    <div class="tabs"><button id="tIn" class="on">Sign in</button><button id="tUp">Create account</button></div>
+    <form class="form" id="auth">
+      <label id="nameRow" style="display:none">Full name<input name="name" maxlength="80"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Password<input name="password" type="password" required minlength="8" autocomplete="current-password"></label>
+      <button class="btn" id="authBtn">Sign in</button><div class="err" id="aerr"></div>
+    </form>
+    <p style="color:var(--muted);font-size:13px;margin-top:12px">You can still order without an account. Orders placed while signed in appear here.</p>
+  </div>
+  <div id="me" style="display:none">
+    <div class="row"><h2 class="display">My Account</h2><button class="btn ghost" id="logout">Sign out</button></div>
+    <p id="hello" style="color:var(--muted)"></p>
+    <div class="panel" style="margin-top:18px"><h3 class="display">My orders</h3><div id="orders"></div></div>
+    <form class="panel form" id="addr" style="margin-top:18px"><h3 class="display">Saved address</h3>
+      <div class="two"><label>Full name<input name="name" maxlength="80"></label><label>Mobile<input name="phone" inputmode="numeric"></label></div>
+      <label>Address<textarea name="address" rows="2" maxlength="300"></textarea></label>
+      <div class="two"><label>City<input name="city"></label><label>State<input name="state"></label></div>
+      <label>Pincode<input name="pincode" inputmode="numeric" maxlength="6"></label>
+      <button class="btn">Save address</button></form>
+  </div>
+</main>
+<script src="/js/common.js?v=6"></script>
+<script src="/js/account.js?v=1"></script>
+</body>
+</html>

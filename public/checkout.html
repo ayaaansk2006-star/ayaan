@@ -22,11 +22,15 @@
     <div class="step"><i>1</i><h3 class="display">Shipping details</h3></div>
     <div class="two"><label>Full name<input name="name" required maxlength="80"></label>
       <label>Mobile number<input name="phone" required inputmode="numeric" placeholder="10-digit"></label></div>
+    <p id="acct" style="font-size:14px;color:var(--muted)"><a class="lime" href="/account">Sign in</a> to save your address and see all your orders, or continue as guest.</p>
     <label>Email (order confirmation is sent here)<input name="email" type="email" required></label>
     <label>Address<textarea name="address" rows="2" required maxlength="300"></textarea></label>
     <div class="two"><label>City<input name="city" required></label><label>State<input name="state" required></label></div>
     <div class="two"><label>Pincode<input name="pincode" required inputmode="numeric" maxlength="6"></label>
-      <label>Bike & year (optional)<input name="notes" maxlength="300" placeholder="e.g. Speed 400, 2024"></label></div>
+      <label>Courier charge<input id="shipinfo" readonly placeholder="Enter pincode to see"></label></div>
+    <div class="two"><label>Bike model &amp; name<input name="bike" required maxlength="80" placeholder="e.g. Royal Enfield Classic 350, 2019"></label>
+      <label>BS version (fitting differs)<select name="bs" required><option value="">Choose</option>
+        <option>BS3</option><option>BS4</option><option>BS6</option><option>Not sure</option></select></label></div>
 
     <div class="step" style="margin-top:10px"><i>2</i><h3 class="display">Payment</h3></div>
     <label class="addon" id="opt-rzp"><input type="radio" name="pm" value="rzp" checked>
@@ -52,72 +56,13 @@
   <aside class="panel" style="height:fit-content;position:sticky;top:90px">
     <h3 class="display" style="margin-bottom:10px">Order summary</h3>
     <div id="summary"></div>
-    <div class="row" style="margin-top:16px;font-size:20px"><span>Total</span><b class="lime display" id="total"></b></div>
+    <div class="row" style="margin-top:16px"><span>Courier</span><b id="ship">Enter pincode</b></div>
+    <div class="row" style="margin-top:8px;font-size:20px"><span>Total</span><b class="lime display" id="total"></b></div>
     <p style="color:var(--muted);font-size:13px;margin-top:14px">Online payments confirm instantly; QR payments are confirmed after we verify them. You'll get an email at every step.</p>
   </aside>
 </main>
 
 <script src="/js/common.js?v=6"></script>
-<script>
-const items = Cart.get().map(i => ({ slug: i.slug, qty: i.qty, addons: i.addons }));
-if (!items.length) location.href = '/';
-api('/api/quote', { method: 'POST', body: { items } }).then(q => {
-  $('#summary').innerHTML = q.lines.map(l => `<div class="line"><img src="${esc(l.image)}" alt="">
-    <div><b>${esc(l.title)}</b>${l.addons.map(a => `<br><small class="lime">+ ${esc(a.name)}</small>`).join('')}
-    <br><small>Qty ${l.qty} × ${inr(l.unit)}</small></div><b>${inr(l.lineTotal)}</b></div>`).join('');
-  $('#total').textContent = $('#amt').textContent = inr(q.total);
-  $("#qr").src = q.qr; $("#upiid").textContent = q.upiId; $("#upilink").href = q.upiLink;
-  if (!q.razorpay) { $('#opt-rzp').style.display = 'none'; $('[name=pm][value=qr]').checked = true; showPm(); }
-}).catch(e => { $('#err').textContent = e.message; });
-
-const pm = () => $('[name=pm]:checked').value;
-function showPm() {
-  $('#qr-box').style.display = pm() === 'qr' ? '' : 'none';
-  $('[name=utr]').required = pm() === 'qr';
-}
-document.querySelectorAll('[name=pm]').forEach(r => r.onchange = showPm);
-
-const done = (id, email) => {
-  Cart.clear();
-  location.href = `/track?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&new=1`;
-};
-const fail = msg => { $('#err').textContent = msg; $('#place').disabled = false; };
-
-function loadRzp() {
-  return window.Razorpay ? Promise.resolve() : new Promise((ok, no) => {
-    const s = document.createElement('script');
-    s.src = 'https://checkout.razorpay.com/v1/checkout.js'; s.onload = ok; s.onerror = () => no(new Error('Could not load payment window'));
-    document.head.appendChild(s);
-  });
-}
-
-async function payOnline(body) {
-  const o = await api('/api/razorpay/order', { method: 'POST', body });
-  await loadRzp();
-  const rz = new Razorpay({
-    key: o.key, order_id: o.rzpOrderId, amount: o.amount, currency: 'INR',
-    name: 'Altitude Moto', description: 'Order ' + o.id, image: location.origin + '/logo.png',
-    prefill: { name: o.name, email: o.email, contact: o.phone }, theme: { color: '#FEF502' },
-    handler: async resp => {
-      try { await api('/api/razorpay/verify', { method: 'POST', body: resp }); done(o.id, o.email); }
-      catch (err) { fail(err.message); }
-    },
-    modal: { ondismiss: () => fail('Payment cancelled. You can try again.') }
-  });
-  rz.on('payment.failed', r => fail('Payment failed: ' + (r.error?.description || 'please try again')));
-  rz.open();
-}
-
-$('#form').onsubmit = async e => {
-  e.preventDefault();
-  $('#err').textContent = ''; $('#place').disabled = true;
-  const body = { ...Object.fromEntries(new FormData(e.target)), items };
-  try {
-    if (pm() === 'rzp') return await payOnline(body);
-    const { id } = await api('/api/orders', { method: 'POST', body });
-    done(id, body.email);
-  } catch (err) { fail(err.message); }
-};
-</script>
+<script src="/js/checkout.js?v=1"></script>
 </body>
 </html>

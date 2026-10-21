@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const db = require('./db');
 const mail = require('./mail');
 const order = require('./order');
+const { userId } = require('./auth');
 
 const KEY_ID = process.env.RAZORPAY_KEY_ID;
 const SECRET = process.env.RAZORPAY_KEY_SECRET;
@@ -28,7 +29,7 @@ r.post('/razorpay/order', express.json({ limit: '50kb' }), async (req, res) => {
   if (!enabled) return res.status(503).json({ error: 'Online payment is not available right now. Please use UPI QR.' });
   try {
     const c = order.customer(req.body);
-    const o = await order.create(c, await order.price(req.body.items), { status: 'Awaiting Payment', method: 'Razorpay' });
+    const o = await order.create(c, await order.price(req.body.items, req.body.pincode), { status: 'Awaiting Payment', method: 'Razorpay', userId: userId(req) });
     const rp = await fetch('https://api.razorpay.com/v1/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + Buffer.from(`${KEY_ID}:${SECRET}`).toString('base64') },

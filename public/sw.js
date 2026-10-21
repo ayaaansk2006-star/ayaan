@@ -1,5 +1,5 @@
 // Pages: network first (fresh prices), cache fallback offline. Static assets: cache first. API: never cached.
-const C = 'am-v1';
+const C = 'am-v2';
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(['/', '/logo.png?v=2', '/css/style.css?v=4', '/css/home.css?v=3']))); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {

@@ -15,7 +15,7 @@
 <body>
 <header class="top"><div class="wrap">
   <a href="/" class="brand"><img src="/logo.png?v=2" alt="">ALTITUDE MOTO</a>
-  <nav class="links"><a href="/">Shop</a></nav>
+  <nav class="links"><a href="/">Shop</a><a href="/review">Reviews</a><a href="/account">Account</a></nav>
 </div></header>
 <main class="wrap" style="max-width:720px;padding:50px 20px">
   <div id="success" class="panel" style="display:none;text-align:center;margin-bottom:20px;border-color:var(--lime)">
@@ -45,22 +45,11 @@ async function track(id, email) {
       ${o.items.map(l => `<div class="line"><img src="${esc(l.image)}" alt=""><div><b>${esc(l.title)}</b>
         ${l.addons.map(a => `<br><small class="lime">+ ${esc(a.name)}</small>`).join('')}<br><small>Qty ${l.qty}</small></div>
         <b>${inr(l.lineTotal)}</b></div>`).join('')}
+      ${o.shipping ? `<div class="row" style="margin-top:12px"><span>Courier</span><b>${inr(o.shipping)}</b></div>` : ''}
       <div class="row" style="margin-top:12px"><b>Total</b><b class="lime display">${inr(o.total)}</b></div>
       <a class="btn ghost" style="margin-top:16px;width:100%" target="_blank" rel="noopener"
         href="https://wa.me/919833731869?text=${encodeURIComponent(`Hi Altitude Moto, my order ${o.id} (${inr(o.total)}). Status: ${o.status}`)}">Message us on WhatsApp about this order</a>
-      ${o.status === 'Delivered' ? `<h3 class="display" style="margin-top:22px">Rate your parts</h3>` + o.items.map(l => `
-        <form class="form rv" data-slug="${esc(l.slug)}" style="margin-top:12px">
-          <b>${esc(l.title)}</b>
-          <div class="stars">${[5,4,3,2,1].map(n => `<label><input type="radio" name="rating" value="${n}" required>★</label>`).join('')}</div>
-          <textarea name="text" rows="2" maxlength="600" required placeholder="How is the fit and finish?"></textarea>
-          <button class="btn">Submit review</button><div class="err"></div></form>`).join('') : ''}`;
-    document.querySelectorAll('form.rv').forEach(f => f.onsubmit = async ev => {
-      ev.preventDefault();
-      try {
-        await api('/api/reviews', { method: 'POST', body: { orderId: id, email, slug: f.dataset.slug, rating: f.rating.value, text: f.text.value } });
-        f.innerHTML = '<p class="lime">Thanks! Your review will appear after a quick check.</p>';
-      } catch (err) { f.querySelector('.err').textContent = err.message; }
-    });
+      ${o.status === 'Delivered' ? `<a class="btn" style="margin-top:12px;width:100%" href="/review?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(email)}">Write a review with photos / videos</a>` : ''}`;
   } catch (e) { $('#err').textContent = e.message; $('#result').style.display = 'none'; }
 }
 const qs = new URLSearchParams(location.search);

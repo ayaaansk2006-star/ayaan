@@ -29,7 +29,7 @@ function render() {
       <td><b>${esc(o.name)}</b><br><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a><br><small>${esc(o.email)}</small>
         <br><small>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} - ${esc(o.pincode)}</small>${o.notes ? `<br><small class="lime">${esc(o.notes)}</small>` : ''}</td>
       <td>${o.items.map(i => `${esc(i.title)} × ${i.qty}${i.addons.map(a => `<br><small>+ ${esc(a.name)}</small>`).join('')}`).join('<br>')}</td>
-      <td><b>${inr(o.total)}</b><br><a class="lime" target="_blank" rel="noopener" href="https://wa.me/91${esc(o.phone.replace(/\D/g,'').slice(-10))}?text=${encodeURIComponent(`Hi ${o.name}, your Altitude Moto order ${o.id} is now: ${o.status}. Track: ${location.origin}/track?id=${o.id}&email=${o.email}`)}">WhatsApp customer</a><br><small>${esc(o.method || "UPI QR")}: ${esc(o.utr || "not paid")}</small></td>
+      <td><b>${inr(o.total)}</b>${o.shipping ? `<br><small>incl. courier ${inr(o.shipping)}</small>` : ''}<br><a class="lime" target="_blank" rel="noopener" href="https://wa.me/91${esc(o.phone.replace(/\D/g,'').slice(-10))}?text=${encodeURIComponent(`Hi ${o.name}, your Altitude Moto order ${o.id} is now: ${o.status}. Track: ${location.origin}/track?id=${o.id}&email=${o.email}`)}">WhatsApp customer</a><br><small>${esc(o.method || "UPI QR")}: ${esc(o.utr || "not paid")}</small></td>
       <td><select data-id="${esc(o.id)}" class="st-${o.status.split(' ')[0]}">${statuses.map(s =>
         `<option ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</table>`
       : '<p>No orders yet.</p>';
@@ -51,7 +51,7 @@ function render() {
   } else if (tab === 'reviews') {
     $('#view').innerHTML = reviews.length ? `<table><tr><th>Product</th><th>Review</th><th>Status</th><th></th></tr>${reviews.map(r => `<tr>
       <td>${esc((products.find(p => p.slug === r.slug) || {}).title || r.slug)}<br><small>${esc(r.order_id)}</small></td>
-      <td><span class="lime">${'★'.repeat(r.rating)}</span><br>${esc(r.text)}<br><small>— ${esc(r.name)}</small></td>
+      <td><span class="lime">${'★'.repeat(r.rating)}</span><br>${esc(r.text)}<br><small>— ${esc(r.name)}</small>${(r.media || []).length ? '<br>' + r.media.map(m => `<a href="${esc(m.url)}" target="_blank" rel="noopener" class="lime">${m.type === 'video' ? 'Video' : `<img src="${esc(m.url)}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;vertical-align:middle">`}</a>`).join(' ') : ''}</td>
       <td>${r.approved ? '<b class="lime">Live</b>' : 'Waiting'}</td>
       <td><button class="btn" style="padding:8px 12px" data-rv="${r.id}" data-ap="${r.approved ? 0 : 1}">${r.approved ? 'Hide' : 'Approve'}</button>
         <button class="btn ghost" style="padding:8px 12px" data-del="${r.id}">Delete</button></td></tr>`).join('')}</table>` : '<p>No reviews yet. Customers can review from the Track Order page once you mark their order Delivered.</p>';

@@ -20,10 +20,13 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   next();
 });
+app.use('/api/account', require('./src/auth'));
+app.use('/api', require('./src/uploads'));
 app.use('/api', require('./src/shop'));
 app.use('/api', require('./src/reviews').pub);
 app.use('/api', require('./src/reels').pub);
 app.use('/api/admin', require('./src/admin'));
+app.use('/uploads', express.static(require('./src/uploads').DIR, { maxAge: '30d' }));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { maxAge: '7d' }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
