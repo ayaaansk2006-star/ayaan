@@ -41,7 +41,7 @@ r.post('/orders', async (req, res) => {
 r.get('/orders/:id', async (req, res) => {
   const o = await order.find(req.params.id);
   if (!o || o.email !== String(req.query.email || '').toLowerCase()) return res.status(404).json({ error: 'Order not found' });
-  res.json({ id: o.id, created_at: o.created_at, status: o.status, items: o.items, total: o.total, shipping: o.shipping, name: o.name, method: o.method });
+  res.json({ id: o.id, created_at: o.created_at, status: o.status, items: o.items, total: o.total, shipping: o.shipping, name: o.name, method: o.method, history: o.history, courier: o.courier, awb: o.awb });
 });
 
 module.exports = r;

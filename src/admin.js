@@ -53,6 +53,10 @@ r.patch('/orders/:id', async (req, res) => {
   const before = await db.get('SELECT status FROM orders WHERE id=?', [req.params.id]);
   if (!before) return res.status(404).json({ error: 'Not found' });
   await db.run('UPDATE orders SET status=? WHERE id=?', [status, req.params.id]);
+  // Courier name + tracking number, usually entered when marking Shipped.
+  if (req.body.awb !== undefined) await db.run('UPDATE orders SET courier=?, awb=? WHERE id=?',
+    [String(req.body.courier || '').trim().slice(0, 40), String(req.body.awb || '').trim().slice(0, 40), req.params.id]);
+  if (before.status !== status) await db.logStatus(req.params.id);
   const o = db.parseOrder(await db.get('SELECT * FROM orders WHERE id=?', [req.params.id]));
   if (before.status !== status) await mail.statusChanged(o);
   res.json(o);

@@ -21,6 +21,8 @@ function openProduct(p) {
   <div class="detail"><span class="tag">${esc(p.bike)}</span><h2>${esc(p.title)}</h2>
     <div class="display lime" style="font-size:32px" id="mprice">${inr(p.price)}</div>
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
+    ${p.variants.length ? `<div class="variant"><b>Your bike's version <span class="lime">*</span></b><small>Fitting is different for each, price is the same</small>
+      <div class="chips">${p.variants.map(v => `<button type="button" class="chip" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div></div>` : ''}
     ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
     <div class="qty"><button id="qm" aria-label="Less">−</button><b id="qv">1</b><button id="qp" aria-label="More">+</button></div>
     <button class="btn" id="addcart">Add to Cart</button>
@@ -45,15 +47,23 @@ function openProduct(p) {
     $('#pcount').textContent = `${at + 1} / ${p.images.length}`;
     document.querySelectorAll('.thumbs img').forEach((t, j) => t.classList.toggle('on', j === at));
   };
-  const add = () => Cart.add({ slug: p.slug, title: p.title, image: p.images[0], qty, unit: unit(), addons: chosen(),
-    addonNames: p.addons.filter(a => chosen().includes(a.id)).map(a => '+ ' + a.name).join(', ') });
+  let variant = '';
+  document.querySelectorAll('.chip[data-v]').forEach(c => c.onclick = () => {
+    variant = c.dataset.v; document.querySelectorAll('.chip[data-v]').forEach(x => x.classList.toggle('on', x === c));
+  });
+  const add = () => {
+    if (p.variants.length && !variant) { toast(`Choose your bike version (${p.variants.join(' / ')})`); return false; }
+    Cart.add({ slug: p.slug, title: p.title + (variant ? ` (${variant})` : ''), variant, image: p.images[0], qty, unit: unit(), addons: chosen(),
+      addonNames: p.addons.filter(a => chosen().includes(a.id)).map(a => '+ ' + a.name).join(', ') });
+    return true;
+  };
   document.querySelectorAll('.addon input').forEach(i => i.onchange = upd);
   document.querySelectorAll('.thumbs img').forEach(t => t.onclick = () => show(+t.dataset.i));
   if ($('#prev')) { $('#prev').onclick = () => show(at - 1); $('#next').onclick = () => show(at + 1); }
   $('#qm').onclick = () => { qty = Math.max(1, qty - 1); upd(); };
   $('#qp').onclick = () => { qty = Math.min(10, qty + 1); upd(); };
-  $('#addcart').onclick = () => { add(); closeModal(); };
-  $('#buynow').onclick = () => { add(); location.href = '/checkout'; };
+  $('#addcart').onclick = () => { if (add()) closeModal(); };
+  $('#buynow').onclick = () => { if (add()) location.href = '/checkout'; };
   $('#mclose').onclick = closeModal;
   $('#modal').classList.add('open');
   $('#modal').onkey = e => { if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); };

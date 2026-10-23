@@ -25,6 +25,7 @@ function orderHtml(o, heading) {
   <table style="width:100%;border-collapse:collapse;color:#eee">${rows}
   ${o.shipping ? `<tr><td colspan="2" style="padding:8px">Courier</td><td style="padding:8px;text-align:right">${inr(o.shipping)}</td></tr>` : ''}
   <tr><td colspan="2" style="padding:8px"><b>Total</b></td><td style="padding:8px;text-align:right"><b>${inr(o.total)}</b></td></tr></table>
+  ${o.awb ? `<p><b>Courier:</b> ${esc(o.courier)} — Tracking no. <b>${esc(o.awb)}</b></p>` : ''}
   ${o.notes ? `<p><b>Bike:</b> ${esc(o.notes)}</p>` : ''}
   <p><b>Payment:</b> ${esc(o.method)} — ${esc(o.utr)}</p>
   <p><b>Ship to:</b><br>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} - ${esc(o.pincode)}<br>Phone: ${esc(o.phone)}</p>

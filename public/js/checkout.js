@@ -1,4 +1,4 @@
-const items = Cart.get().map(i => ({ slug: i.slug, qty: i.qty, addons: i.addons }));
+const items = Cart.get().map(i => ({ slug: i.slug, qty: i.qty, addons: i.addons, variant: i.variant }));
 if (!items.length) location.href = '/';
 const form = $('#form');
 let shipped = false, signedIn = false, auto = false;

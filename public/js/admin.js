@@ -29,13 +29,18 @@ function render() {
       <td><b>${esc(o.name)}</b><br><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a><br><small>${esc(o.email)}</small>
         <br><small>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} - ${esc(o.pincode)}</small>${o.notes ? `<br><small class="lime">${esc(o.notes)}</small>` : ''}</td>
       <td>${o.items.map(i => `${esc(i.title)} × ${i.qty}${i.addons.map(a => `<br><small>+ ${esc(a.name)}</small>`).join('')}`).join('<br>')}</td>
-      <td><b>${inr(o.total)}</b>${o.shipping ? `<br><small>incl. courier ${inr(o.shipping)}</small>` : ''}<br><a class="lime" target="_blank" rel="noopener" href="https://wa.me/91${esc(o.phone.replace(/\D/g,'').slice(-10))}?text=${encodeURIComponent(`Hi ${o.name}, your Altitude Moto order ${o.id} is now: ${o.status}. Track: ${location.origin}/track?id=${o.id}&email=${o.email}`)}">WhatsApp customer</a><br><small>${esc(o.method || "UPI QR")}: ${esc(o.utr || "not paid")}</small></td>
+      <td><b>${inr(o.total)}</b>${o.shipping ? `<br><small>incl. courier ${inr(o.shipping)}</small>` : ''}<br><a class="lime" target="_blank" rel="noopener" href="https://wa.me/91${esc(o.phone.replace(/\D/g,'').slice(-10))}?text=${encodeURIComponent(`Hi ${o.name}, your Altitude Moto order ${o.id} is now: ${o.status}. Track: ${location.origin}/track?id=${o.id}&email=${o.email}`)}">WhatsApp customer</a><br><small>${esc(o.method || "UPI QR")}: ${esc(o.utr || "not paid")}</small>${o.awb ? `<br><small class="lime">${esc(o.courier)} ${esc(o.awb)}</small>` : ''}</td>
       <td><select data-id="${esc(o.id)}" class="st-${o.status.split(' ')[0]}">${statuses.map(s =>
         `<option ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</table>`
       : '<p>No orders yet.</p>';
     document.querySelectorAll('select[data-id]').forEach(s => s.onchange = async () => {
       if (!confirm(`Set ${s.dataset.id} to "${s.value}"? The customer will be emailed.`)) return render();
-      await api('/api/admin/orders/' + s.dataset.id, { method: 'PATCH', body: { status: s.value } });
+      const body = { status: s.value };
+      if (s.value === 'Shipped') {
+        body.courier = prompt('Courier company (e.g. DTDC, Delhivery, India Post) — leave blank if none') || '';
+        body.awb = prompt('Tracking / AWB number — leave blank if none') || '';
+      }
+      await api('/api/admin/orders/' + s.dataset.id, { method: 'PATCH', body });
       toast('Updated & customer emailed'); load();
     });
   } else if (tab === 'videos') {

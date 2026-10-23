@@ -37,6 +37,8 @@ async function setup() {
   if (!oc.includes('method')) await run("ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'");
   if (!oc.includes('rzp_order_id')) await run('ALTER TABLE orders ADD COLUMN rzp_order_id TEXT');
   if (!oc.includes('user_id')) await run('ALTER TABLE orders ADD COLUMN user_id INTEGER');
+  if (!oc.includes('awb')) { await run('ALTER TABLE orders ADD COLUMN courier TEXT'); await run('ALTER TABLE orders ADD COLUMN awb TEXT'); }
+  if (!oc.includes('history')) await run("ALTER TABLE orders ADD COLUMN history TEXT DEFAULT '[]'");
   if (!oc.includes('shipping')) await run('ALTER TABLE orders ADD COLUMN shipping INTEGER DEFAULT 0');
   await run(`CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, order_id TEXT, name TEXT, rating INTEGER,
@@ -67,7 +69,11 @@ async function setup() {
 let ready;
 const init = () => (ready ||= setup().catch(e => { ready = null; throw e; }));
 
-const parseProduct = p => p && { ...p, addons: JSON.parse(p.addons), images: JSON.parse(p.images), active: !!p.active };
-const parseOrder = o => o && { ...o, items: JSON.parse(o.items) };
+// Variants (e.g. BS3/BS4/BS6) come straight from the catalog; they change fitting, not price.
+const variantsOf = slug => catalog.find(c => c.slug === slug)?.variants || [];
+const parseProduct = p => p && { ...p, addons: JSON.parse(p.addons), images: JSON.parse(p.images), active: !!p.active, variants: variantsOf(p.slug) };
+const parseOrder = o => o && { ...o, items: JSON.parse(o.items), history: JSON.parse(o.history || '[]') };
+// Append to the status timeline; runs after a status UPDATE so it records the new status.
+const logStatus = id => run(`UPDATE orders SET history=json_insert(COALESCE(history,'[]'),'$[#]',json_object('status',status,'at',datetime('now'))) WHERE id=?`, [id]);
 
-module.exports = { init, all, get, run, parseProduct, parseOrder };
+module.exports = { init, all, get, run, parseProduct, parseOrder, logStatus };

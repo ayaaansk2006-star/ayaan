@@ -12,7 +12,9 @@ async function price(items, pincode) {
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const addons = p.addons.filter(a => (it.addons || []).includes(a.id));
     const unit = p.price + addons.reduce((s, a) => s + a.price, 0);
-    return { slug: p.slug, title: p.title, qty, unit, addons, lineTotal: unit * qty, image: p.images[0] };
+    const variant = p.variants.length ? String(it.variant || '') : '';
+    if (p.variants.length && !p.variants.includes(variant)) throw new Error(`Choose the ${p.variants.join('/')} version for ${p.title}`);
+    return { slug: p.slug, title: p.title + (variant ? ` (${variant})` : ''), variant, qty, unit, addons, lineTotal: unit * qty, image: p.images[0] };
   }));
   const subtotal = lines.reduce((s, l) => s + l.lineTotal, 0);
   const ship = shipping.quote(pincode);
@@ -25,15 +27,12 @@ function customer(b) {
   const c = {
     name: clean(b.name, 80), email: clean(b.email, 120).toLowerCase(), phone: clean(b.phone, 15),
     address: clean(b.address, 300), city: clean(b.city, 60), state: clean(b.state, 60),
-    pincode: clean(b.pincode, 6), bike: clean(b.bike, 80), bs: clean(b.bs, 10)
+    pincode: clean(b.pincode, 6), notes: clean(b.bike, 80)
   };
   if (!c.name || !c.address || !c.city || !c.state) throw new Error('Please fill all address fields');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) throw new Error('Invalid email');
   if (!/^[6-9]\d{9}$/.test(c.phone.replace(/^\+?91/, ''))) throw new Error('Invalid 10-digit mobile number');
   if (!shipping.quote(c.pincode)) throw new Error('Invalid pincode');
-  if (!c.bike) throw new Error('Enter your bike model and name');
-  if (!['BS3', 'BS4', 'BS6', 'Not sure'].includes(c.bs)) throw new Error('Choose your bike BS version');
-  c.notes = `${c.bike} · ${c.bs}`;
   return c;
 }
 
@@ -45,6 +44,7 @@ async function create(c, { lines, total, shipping: fee }, { utr = '', status, me
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   [id, new Date().toISOString(), c.name, c.email, c.phone, c.address, c.city, c.state, c.pincode,
     JSON.stringify(lines), total, utr, c.notes, status, method, fee, userId]);
+  await db.logStatus(id);
   return find(id);
 }
 

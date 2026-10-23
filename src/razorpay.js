@@ -23,6 +23,7 @@ async function markPaid(rzpOrderId, paymentId, method = 'Razorpay') {
     const test = KEY_ID.startsWith('rzp_test_');
     await db.run('UPDATE orders SET status=?, utr=?, method=? WHERE id=?',
       [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : method, o.id]);
+    await db.logStatus(o.id);
     await mail.orderPlaced(await order.find(o.id));
   }
   return o.id;

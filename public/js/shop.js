@@ -10,7 +10,7 @@ function list() {
 }
 
 function quickAdd(p) {
-  if (p.addons.length) return openProduct(p);
+  if (p.addons.length || p.variants.length) return openProduct(p);
   Cart.add({ slug: p.slug, title: p.title, image: p.images[0], qty: 1, unit: p.price, addons: [], addonNames: '' });
 }
 
@@ -18,7 +18,7 @@ function renderGrid() {
   const l = list();
   $('#count').textContent = `${l.length} part${l.length === 1 ? '' : 's'}${model ? ' for ' + model : ''}`;
   $('#grid').innerHTML = l.map(p => `<div class="card reveal" data-slug="${esc(p.slug)}">
-    <div class="ph">${p.title.includes('Kit') ? '<span class="badge">KIT</span>' : ''}
+    <div class="ph">${p.title.includes('Kit') ? '<span class="badge">KIT</span>' : ''}${p.variants.length ? `<span class="badge">${esc(p.variants.join(' / '))}</span>` : ''}
       <img loading="lazy" src="${esc(p.images[0])}" alt="${esc(p.title)}">
       ${p.images[1] ? `<img class="alt" loading="lazy" src="${esc(p.images[1])}" alt="">` : ''}
       <button class="quick" data-q="${esc(p.slug)}" aria-label="Quick add ${esc(p.title)}">+</button></div>

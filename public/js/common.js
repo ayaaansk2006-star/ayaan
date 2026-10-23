@@ -7,7 +7,7 @@ const Cart = {
   set(c) { localStorage.setItem('am_cart', JSON.stringify(c)); Cart.render(); },
   add(item) {
     const c = Cart.get();
-    const key = item.slug + '|' + item.addons.sort().join(',');
+    const key = item.slug + '|' + (item.variant || '') + '|' + item.addons.sort().join(',');
     const ex = c.find(i => i.key === key);
     if (ex) { ex.qty = Math.min(ex.qty + item.qty, 10); ex.unit = item.unit; } else c.push({ ...item, key });
     Cart.set(c);

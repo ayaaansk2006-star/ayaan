@@ -37,7 +37,8 @@ const list = [
     price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '', addons: [] },
   { slug: 're-himalayan-411', bike: 'RE Himalayan 411 (BS3/BS4/BS6)', brand: 'Royal Enfield', page: 12, n: 5,
     title: 'RE Himalayan 411 GPS Mount', compat: 'Compatible with Himalayan 411 BS4/BS6 (up to 2021) windshield',
-    price: 1500, mrp_breakdown: 'GPS Mount ₹1500', note: '', addons: [] },
+    price: 1500, mrp_breakdown: 'GPS Mount ₹1500', note: '', addons: [],
+    variants: ['BS3', 'BS4', 'BS6'] }, // fitting differs per BS version; same price
   { slug: 're-classic-reborn', bike: 'RE Classic 350 Reborn', brand: 'Royal Enfield', page: 13, idx: [0, 4, 1],
     title: 'RE Classic 350 (Reborn) GPS Mount', compat: 'Compatible with RE Himalayan BS6 windshield',
     price: 2200, mrp_breakdown: 'GPS Mount ₹2200', note: '',

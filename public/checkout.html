@@ -28,9 +28,7 @@
     <div class="two"><label>City<input name="city" required></label><label>State<input name="state" required></label></div>
     <div class="two"><label>Pincode<input name="pincode" required inputmode="numeric" maxlength="6"></label>
       <label>Courier charge<input id="shipinfo" readonly placeholder="Enter pincode to see"></label></div>
-    <div class="two"><label>Bike model &amp; name<input name="bike" required maxlength="80" placeholder="e.g. Royal Enfield Classic 350, 2019"></label>
-      <label>BS version (fitting differs)<select name="bs" required><option value="">Choose</option>
-        <option>BS3</option><option>BS4</option><option>BS6</option><option>Not sure</option></select></label></div>
+    <label>Bike model &amp; year (optional, helps us double-check fitment)<input name="bike" maxlength="80" placeholder="e.g. Triumph Speed 400, 2024"></label>
 
     <div class="step" style="margin-top:10px"><i>2</i><h3 class="display">Payment</h3></div>
     <label class="addon"><input type="radio" name="pm" value="qr" checked>
@@ -65,7 +63,7 @@
   </aside>
 </main>
 
-<script src="/js/common.js?v=6"></script>
-<script src="/js/checkout.js?v=3"></script>
+<script src="/js/common.js?v=7"></script>
+<script src="/js/checkout.js?v=4"></script>
 </body>
 </html>
