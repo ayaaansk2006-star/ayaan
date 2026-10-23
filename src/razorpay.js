@@ -15,14 +15,14 @@ const hmac = (key, data) => crypto.createHmac('sha256', key).update(data).digest
 const same = (a, b) => typeof a === 'string' && a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
 // Idempotent: browser callback and webhook may both arrive for one payment.
-async function markPaid(rzpOrderId, paymentId) {
+async function markPaid(rzpOrderId, paymentId, method = 'Razorpay') {
   const o = await db.get('SELECT id, status FROM orders WHERE rzp_order_id=?', [rzpOrderId]);
   if (!o) return null;
   if (o.status === 'Awaiting Payment') {
     // Test-mode keys accept fake payments, so those orders never auto-confirm.
     const test = KEY_ID.startsWith('rzp_test_');
     await db.run('UPDATE orders SET status=?, utr=?, method=? WHERE id=?',
-      [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : 'Razorpay', o.id]);
+      [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : method, o.id]);
     await mail.orderPlaced(await order.find(o.id));
   }
   return o.id;
@@ -64,7 +64,9 @@ r.post('/razorpay/webhook', express.raw({ type: '*/*', limit: '1mb' }), async (r
   const evt = JSON.parse(req.body.toString());
   const pay = evt.payload?.payment?.entity;
   if (['payment.captured', 'order.paid'].includes(evt.event) && pay?.order_id) await markPaid(pay.order_id, pay.id);
+  const qr = evt.payload?.qr_code?.entity;
+  if (evt.event === 'qr_code.credited' && qr?.id && pay?.amount >= qr.payment_amount) await markPaid(qr.id, pay.id, 'Razorpay QR');
   res.json({ ok: true });
 });
 
-module.exports = Object.assign(r, { enabled });
+module.exports = Object.assign(r, { enabled, markPaid });

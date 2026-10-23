@@ -1,7 +1,7 @@
 const items = Cart.get().map(i => ({ slug: i.slug, qty: i.qty, addons: i.addons }));
 if (!items.length) location.href = '/';
 const form = $('#form');
-let shipped = false, signedIn = false;
+let shipped = false, signedIn = false, auto = false;
 
 // The server prices everything; the courier charge (and the QR amount) changes with the pincode.
 async function quote() {
@@ -16,7 +16,9 @@ async function quote() {
     $('#shipinfo').value = shipped ? `${inr(q.shipping)} · ${q.zone}` : (pin.length === 6 ? 'Invalid pincode' : '');
     $('#total').textContent = $('#amt').textContent = inr(q.total);
     $('#qr').src = q.qr; $('#upiid').textContent = q.upiId; $('#upilink').href = q.upiLink;
-    if (!q.razorpay) { $('#opt-rzp').style.display = 'none'; $('[name=pm][value=qr]').checked = true; showPm(); }
+    auto = q.razorpay;
+    if (!auto) { $('#opt-rzp').style.display = 'none'; $('#qr-label').innerHTML = '<b>Scan UPI QR</b> — pay, then enter the transaction ID'; }
+    showPm();
   } catch (e) { $('#err').textContent = e.message; }
 }
 form.pincode.oninput = () => { const n = form.pincode.value.trim().length; if (n === 6 || shipped) quote(); };
@@ -33,8 +35,10 @@ api('/api/account/me').then(u => {
 
 const pm = () => $('[name=pm]:checked').value;
 function showPm() {
-  $('#qr-box').style.display = pm() === 'qr' ? '' : 'none';
-  $('[name=utr]').required = pm() === 'qr';
+  // With Razorpay on, the QR is made per order after the form is filled, so it is shown only then.
+  $('#qr-box').style.display = pm() === 'qr' && !auto ? '' : 'none';
+  $('[name=utr]').required = pm() === 'qr' && !auto;
+  $('#place').textContent = pm() === 'qr' && auto ? 'Show QR & Place Order' : 'Pay & Place Order';
 }
 document.querySelectorAll('[name=pm]').forEach(r => r.onchange = showPm);
 
@@ -73,6 +77,24 @@ async function payOnline(body) {
   rz.open();
 }
 
+async function payQr(body) {
+  const o = await api('/api/razorpay/qr', { method: 'POST', body });
+  $('#qr').src = o.image;
+  if (o.upiLink) { $('#qr-wait').insertAdjacentHTML('afterend', `<a class="btn" href="${esc(o.upiLink)}" style="margin:10px 0">On this phone? Tap to pay in your UPI app</a>`); }
+  $('#qr-manual').style.display = 'none'; $('#qr-wait').style.display = '';
+  $('#qr-box').style.display = ''; $('#place').style.display = 'none';
+  form.querySelectorAll('input, select, textarea').forEach(i => i.disabled = true);
+  $('#qr-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const started = Date.now();
+  const poll = async () => {
+    const s = await api(`/api/razorpay/qr/${encodeURIComponent(o.id)}/status?email=${encodeURIComponent(o.email)}`).catch(() => ({}));
+    if (s.status && s.status !== 'Awaiting Payment') return done(o.id, o.email);
+    if (Date.now() - started > 30 * 60e3) return fail('QR expired. Refresh the page to try again.');
+    setTimeout(poll, 4000);
+  };
+  setTimeout(poll, 4000);
+}
+
 form.onsubmit = async e => {
   e.preventDefault();
   $('#err').textContent = ''; $('#place').disabled = true;
@@ -80,6 +102,7 @@ form.onsubmit = async e => {
   const body = { ...Object.fromEntries(new FormData(form)), items };
   try {
     if (pm() === 'rzp') return await payOnline(body);
+    if (auto) return await payQr(body);
     const { id } = await api('/api/orders', { method: 'POST', body });
     done(id, body.email);
   } catch (err) { fail(err.message); }

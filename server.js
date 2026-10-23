@@ -14,6 +14,7 @@ app.use((req, res, next) => missing.length && process.env.VERCEL
 app.set('trust proxy', 1);
 app.use('/api', (req, res, next) => db.init().then(() => next(), next));
 app.use('/api', require('./src/razorpay'));
+app.use('/api', express.json({ limit: '50kb' }), require('./src/rzpqr'));
 app.use(express.json({ limit: '50kb' }));
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');

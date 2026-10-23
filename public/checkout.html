@@ -33,10 +33,10 @@
         <option>BS3</option><option>BS4</option><option>BS6</option><option>Not sure</option></select></label></div>
 
     <div class="step" style="margin-top:10px"><i>2</i><h3 class="display">Payment</h3></div>
-    <label class="addon" id="opt-rzp"><input type="radio" name="pm" value="rzp" checked>
-      <span><b>Pay Online</b> — UPI, Cards, Netbanking, Wallets<br><small style="color:var(--muted)">Instant confirmation, secured by Razorpay</small></span></label>
-    <label class="addon"><input type="radio" name="pm" value="qr">
-      <span><b>Scan GPay QR</b> — pay manually, then enter transaction ID</span></label>
+    <label class="addon"><input type="radio" name="pm" value="qr" checked>
+      <span id="qr-label"><b>Scan UPI QR</b> — GPay, PhonePe, Paytm, any UPI app<br><small style="color:var(--muted)">Your order is confirmed automatically once paid</small></span></label>
+    <label class="addon" id="opt-rzp"><input type="radio" name="pm" value="rzp">
+      <span><b>Cards / Netbanking / Wallets</b><br><small style="color:var(--muted)">Instant confirmation, secured by Razorpay</small></span></label>
 
     <div id="qr-box" style="display:none;text-align:center">
       <div style="background:#fff;color:#000;border-radius:16px;padding:18px;width:300px;margin:14px auto;border:3px solid var(--lime)">
@@ -45,9 +45,12 @@
         <img id="qr" alt="Altitude Moto UPI QR code" style="width:100%;margin-top:8px">
         <small>Scan with GPay · PhonePe · Paytm · any UPI app</small>
       </div>
+      <p id="qr-wait" style="display:none" class="lime"><b>Waiting for your payment…</b> Keep this page open. It moves on by itself once you pay.</p>
+      <div id="qr-manual">
       <p>Amount <b class="lime display" id="amt"></b> is filled in automatically when you scan. UPI ID <b id="upiid"></b></p>
       <a class="btn ghost" id="upilink" style="margin:10px 0">Open UPI app (mobile)</a>
       <label style="text-align:left">UPI Transaction ID / UTR (12 digits, shown in your UPI app after paying)<input name="utr" maxlength="30"></label>
+      </div>
     </div>
     <div class="err" id="err"></div>
     <button class="btn" id="place">Pay &amp; Place Order</button>
@@ -58,11 +61,11 @@
     <div id="summary"></div>
     <div class="row" style="margin-top:16px"><span>Courier</span><b id="ship">Enter pincode</b></div>
     <div class="row" style="margin-top:8px;font-size:20px"><span>Total</span><b class="lime display" id="total"></b></div>
-    <p style="color:var(--muted);font-size:13px;margin-top:14px">Online payments confirm instantly; QR payments are confirmed after we verify them. You'll get an email at every step.</p>
+    <p style="color:var(--muted);font-size:13px;margin-top:14px">Payments are confirmed automatically by Razorpay. You'll get an email at every step.</p>
   </aside>
 </main>
 
 <script src="/js/common.js?v=6"></script>
-<script src="/js/checkout.js?v=1"></script>
+<script src="/js/checkout.js?v=3"></script>
 </body>
 </html>
