@@ -61,7 +61,11 @@ const list = [
   { slug: 'himalayan-450-touring-windshield', bike: 'Himalayan 450 Touring Windshield', brand: 'Royal Enfield',
     title: 'Original Royal Enfield Himalayan 450 Touring Windshield', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350, RE Guerrilla 450',
     price: 3220, mrp_breakdown: 'Windshield ₹3220', note: '', addons: [], kind: 'windshield',
-    images: ['/img/hw450_0.jpeg', '/img/hw450_1.jpeg'] }
+    images: ['/img/hw450_0.jpeg'] },
+  { slug: 'himalayan-450-stock-short-windshield', bike: 'Himalayan 450 Stock Windshield (Short)', brand: 'Royal Enfield',
+    title: 'Stock Royal Enfield Himalayan 450 Windshield (Short)', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350, RE Guerrilla 450',
+    price: 850, mrp_breakdown: 'Windshield ₹850', note: '', addons: [], kind: 'windshield',
+    images: ['/img/hw450_1.jpeg'] }
 ];
 
 module.exports = list.map(({ page, n, idx, ...p }) => ({ ...p, images: p.images || imgs(page, idx || range(n)) }));

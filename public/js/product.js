@@ -12,7 +12,7 @@ function openProduct(p) {
     <div class="specs"><h4>Product details</h4><dl>
       ${p.kind === 'windshield' ? `<dt>Fits</dt><dd>${esc(p.compat)}</dd>` : `<dt>Fits</dt><dd>${esc(p.bike)}</dd>
       <dt>Windshield</dt><dd>${esc(p.compat)}</dd>`}
-      <dt>What you get</dt><dd>${p.kind === 'windshield' ? 'Himalayan 450 Touring windshield' : p.title.includes('Kit') ? 'GPS mount + Hero Xpulse 210 windshield (sold together as a kit)' : 'GPS mount'}${p.addons.length ? '<br><small>Optional: ' + p.addons.map(a => esc(a.name) + ' (+' + inr(a.price) + ')').join(', ') + '</small>' : ''}</dd>
+      <dt>What you get</dt><dd>${p.kind === 'windshield' ? esc(p.title) : p.title.includes('Kit') ? 'GPS mount + Hero Xpulse 210 windshield (sold together as a kit)' : 'GPS mount'}${p.addons.length ? '<br><small>Optional: ' + p.addons.map(a => esc(a.name) + ' (+' + inr(a.price) + ')').join(', ') + '</small>' : ''}</dd>
       <dt>Hardware</dt><dd>All bushes, nuts and bolts included</dd>
       <dt>Price</dt><dd>${esc(p.mrp_breakdown)}</dd>
       <dt>Fitting</dt><dd>Get it fitted at our garage, or WhatsApp us for help</dd>
