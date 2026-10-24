@@ -1,10 +1,27 @@
 let products = [], brand = '', model = '', query = '', sort = '';
 $('#yr').textContent = new Date().getFullYear();
 
+// Typo-tolerant word match: every typed word must be close to some word in the product text.
+const near = (a, b) => {
+  if (Math.abs(a.length - b.length) > 2) return false;
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length] <= (a.length > 5 ? 2 : 1);
+};
+const matches = (p, q) => {
+  const hay = (p.bike + ' ' + p.title + ' ' + p.compat).toLowerCase(), words = hay.split(/[^a-z0-9]+/);
+  return q.split(/\s+/).filter(Boolean).every(w => hay.includes(w) || words.some(h => near(w, h)));
+};
+// A windshield shows under every bike whose mount takes it (RE 450 Touring type).
+const fitsModel = p => p.bike === model ||
+  (p.kind === 'windshield' && products.some(m => m.bike === model && /450 Touring/i.test(m.compat)));
+
 function list() {
-  const q = query.toLowerCase();
-  const out = products.filter(p => (!brand || p.brand === brand) && (!model || p.bike === model) &&
-    (!q || (p.bike + ' ' + p.title + ' ' + p.compat).toLowerCase().includes(q)));
+  const q = query.toLowerCase().trim();
+  // Searching looks across the whole shop, ignoring the brand/model chips.
+  const out = products.filter(p => q ? matches(p, q) : (!brand || p.brand === brand) && (!model || fitsModel(p)));
   if (sort) out.sort((a, b) => sort === 'lo' ? a.price - b.price : b.price - a.price);
   return out;
 }
@@ -16,7 +33,7 @@ function quickAdd(p) {
 
 function renderGrid() {
   const l = list();
-  $('#count').textContent = `${l.length} part${l.length === 1 ? '' : 's'}${model ? ' for ' + model : ''}`;
+  $('#count').textContent = `${l.length} part${l.length === 1 ? '' : 's'}${model && !query.trim() ? ' for ' + model : ''}`;
   $('#grid').innerHTML = l.map(p => `<div class="card reveal" data-slug="${esc(p.slug)}">
     <div class="ph">${p.title.includes('Kit') ? '<span class="badge">KIT</span>' : ''}${p.variants.length ? `<span class="badge">${esc(p.variants.join(' / '))}</span>` : ''}
       <img loading="lazy" src="${esc(p.images[0])}" alt="${esc(p.title)}">
