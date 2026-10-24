@@ -173,3 +173,12 @@ section.reels-sec { padding: 80px 0; border-top: 1px solid var(--line); }
 .cempty b { color: #fff; font-size: 18px; } .cempty .btn { margin-top: 10px; }
 .cart-note { color: var(--muted); font-size: 13px; margin: 6px 0 14px; }
 .cart-trust { color: var(--muted); font-size: 12px; text-align: center; margin-top: 10px; }
+fieldset.variant { margin: 0; } .variant legend { padding: 0 4px; }
+.ticks { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.tick { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-weight: 700; }
+.tick input { position: absolute; opacity: 0; }
+.tick .box { width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 5px; display: grid; place-items: center; }
+.tick input:checked + .box { background: var(--lime); border-color: var(--lime); }
+.tick input:checked + .box::after { content: ""; width: 5px; height: 10px; border: solid #000; border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.tick:has(input:checked) { border-color: var(--lime); }
+.tick input:focus-visible + .box { outline: 2px solid var(--lime); outline-offset: 2px; }

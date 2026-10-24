@@ -21,8 +21,8 @@ function openProduct(p) {
   <div class="detail"><span class="tag">${esc(p.bike)}</span><h2>${esc(p.title)}</h2>
     <div class="display lime" style="font-size:32px" id="mprice">${inr(p.price)}</div>
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
-    ${p.variants.length ? `<div class="variant"><b>Your bike's version <span class="lime">*</span></b><small>Fitting is different for each, price is the same</small>
-      <div class="chips">${p.variants.map(v => `<button type="button" class="chip" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div></div>` : ''}
+    ${p.variants.length ? `<fieldset class="variant"><legend><b>Emission standard of your bike <span class="lime">*</span></b></legend><small>Tick one. Fitting is different for each, price is the same.</small>
+      <div class="ticks">${p.variants.map(v => `<label class="tick"><input type="checkbox" name="bs" value="${esc(v)}"><span class="box"></span>${esc(v)}</label>`).join('')}</div></fieldset>` : ''}
     ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
     <div class="qty"><button id="qm" aria-label="Less">−</button><b id="qv">1</b><button id="qp" aria-label="More">+</button></div>
     <button class="btn" id="addcart">Add to Cart</button>
@@ -48,11 +48,13 @@ function openProduct(p) {
     document.querySelectorAll('.thumbs img').forEach((t, j) => t.classList.toggle('on', j === at));
   };
   let variant = '';
-  document.querySelectorAll('.chip[data-v]').forEach(c => c.onclick = () => {
-    variant = c.dataset.v; document.querySelectorAll('.chip[data-v]').forEach(x => x.classList.toggle('on', x === c));
+  // Tick boxes, but only one can be ticked (a bike has one emission standard).
+  document.querySelectorAll('input[name=bs]').forEach(c => c.onchange = () => {
+    document.querySelectorAll('input[name=bs]').forEach(x => { if (x !== c) x.checked = false; });
+    variant = c.checked ? c.value : '';
   });
   const add = () => {
-    if (p.variants.length && !variant) { toast(`Choose your bike version (${p.variants.join(' / ')})`); return false; }
+    if (p.variants.length && !variant) { toast(`Tick your bike's emission standard: ${p.variants.join(' / ')}`); return false; }
     Cart.add({ slug: p.slug, title: p.title + (variant ? ` (${variant})` : ''), variant, image: p.images[0], qty, unit: unit(), addons: chosen(),
       addonNames: p.addons.filter(a => chosen().includes(a.id)).map(a => '+ ' + a.name).join(', ') });
     return true;
