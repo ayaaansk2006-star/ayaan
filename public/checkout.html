@@ -7,16 +7,8 @@
 .co { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; padding: 40px 20px 80px; }
 .qr { background: #fff; padding: 12px; border-radius: 14px; width: 240px; margin: 14px auto; }
 .step { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
-.pstat { text-align: left; border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 6px auto 0; max-width: 420px; }
-.psteps { display: flex; list-style: none; padding: 0; margin: 0 0 14px; gap: 6px; }
-.psteps li { flex: 1; font-size: 12px; color: var(--muted); border-top: 3px solid var(--line); padding-top: 6px; }
-.psteps li.on { color: #fff; border-color: var(--lime); } .psteps li.ok { color: var(--lime); border-color: var(--lime); }
-.pnow { display: flex; gap: 12px; align-items: center; } .pnow small { display: block; color: var(--muted); font-size: 13px; }
-.ptime { margin-left: auto; font-variant-numeric: tabular-nums; }
-.spin { width: 26px; height: 26px; flex: none; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--lime); animation: sp 0.9s linear infinite; }
-.spin.ok { animation: none; border-color: var(--lime); background: var(--lime); }
+.spin { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--lime); animation: sp .9s linear infinite; }
 @keyframes sp { to { transform: rotate(360deg); } }
-.phelp { font-size: 13px; color: var(--muted); margin-top: 12px; }
 .step i { font-style: normal; background: var(--lime); color: #000; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; }
 @media (max-width: 820px) { .co { grid-template-columns: 1fr; } }
 </style>
@@ -53,11 +45,7 @@
         <img id="qr" alt="Altitude Moto UPI QR code" style="width:100%;margin-top:8px">
         <small>Scan with GPay · PhonePe · Paytm · any UPI app</small>
       </div>
-      <div id="qr-wait" class="pstat" style="display:none">
-        <ol class="psteps"><li id="ps1" class="on">Scan &amp; pay</li><li id="ps2">Bank confirming</li><li id="ps3">Order confirmed</li></ol>
-        <div class="pnow"><span class="spin" id="pspin"></span><div><b id="ptitle">Waiting for your payment</b><small id="psub">Scan the QR with any UPI app and pay. Keep this page open.</small></div><small class="ptime" id="ptime">0:00</small></div>
-        <p class="phelp" id="phelp" style="display:none"></p>
-      </div>
+      <p id="qr-wait" style="display:none" class="lime"><span class="spin"></span> <b>Payment is in process, please wait…</b><br><small style="color:var(--muted)">After paying, keep this page open. It moves on by itself once your payment is confirmed.</small></p>
       <div id="qr-manual">
       <p>Amount <b class="lime display" id="amt"></b> is filled in automatically when you scan. UPI ID <b id="upiid"></b></p>
       <a class="btn ghost" id="upilink" style="margin:10px 0">Open UPI app (mobile)</a>
@@ -78,6 +66,6 @@
 </main>
 
 <script src="/js/common.js?v=8"></script>
-<script src="/js/checkout.js?v=8"></script>
+<script src="/js/checkout.js?v=9"></script>
 </body>
 </html>

@@ -89,38 +89,13 @@ async function payQr(body) {
   form.querySelectorAll('input, select, textarea').forEach(i => i.disabled = true);
   $('#qr-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
   const started = Date.now();
-  const show = (step, title, sub) => {
-    ['ps1', 'ps2', 'ps3'].forEach((id, i) => { $('#' + id).className = i + 1 < step ? 'ok' : i + 1 === step ? 'on' : ''; });
-    $('#ptitle').textContent = title; $('#psub').textContent = sub;
-  };
-  const tick = setInterval(() => {
-    const s = Math.floor((Date.now() - started) / 1000);
-    $('#ptime').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    if (s === 120) {
-      $('#phelp').style.display = '';
-      $('#phelp').innerHTML = `Paid already? Your money is safe. Your order <b class="lime">${esc(o.id)}</b> confirms automatically as soon as your bank tells Razorpay, even if you close this page. Need help? <a class="lime" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, I paid for order ' + o.id + ' but it is still processing')}">WhatsApp us</a>.`;
-    }
-  }, 1000);
-  let timer, finished = false;
   const poll = async () => {
-    clearTimeout(timer);
-    if (finished) return;
     const s = await api(`/api/razorpay/qr/${encodeURIComponent(o.id)}/status?email=${encodeURIComponent(o.email)}`).catch(() => ({}));
-    if (finished) return;
-    if (s.status && s.status !== 'Awaiting Payment') {
-      finished = true; clearInterval(tick); $('#pspin').className = 'spin ok';
-      show(4, 'Payment received! Order confirmed', 'Taking you to your order…');
-      return setTimeout(() => done(o.id, o.email), 1200);
-    }
-    if (s.processing) show(2, 'Payment received, bank is confirming…', 'This usually takes a few seconds. Please don\'t pay again.');
-    if (Date.now() - started > 30 * 60e3) { clearInterval(tick); return fail('QR expired. Refresh the page to try again.'); }
-    timer = setTimeout(poll, 2000);
+    if (s.status && s.status !== 'Awaiting Payment') return done(o.id, o.email);
+    if (Date.now() - started > 30 * 60e3) return fail('QR expired. Refresh the page to try again.');
+    setTimeout(poll, 2000);
   };
-  // Customers often switch to their UPI app and come back: check straight away when they return.
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) poll();
-  });
-  timer = setTimeout(poll, 2000);
+  setTimeout(poll, 2000);
 }
 
 form.onsubmit = async e => {

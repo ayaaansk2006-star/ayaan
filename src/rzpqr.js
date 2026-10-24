@@ -65,8 +65,6 @@ r.get('/razorpay/qr/:id/status', async (req, res) => {
     const { items } = await call(`/payments/qr_codes/${o.rzp_order_id}/payments`).catch(() => ({ items: [] }));
     const paid = items.find(p => p.status === 'captured' && p.amount >= o.total * 100);
     if (paid) await rzp.markPaid(o.rzp_order_id, paid.id, 'Razorpay QR');
-    // A payment Razorpay has seen but not yet captured: the bank is still confirming it.
-    else if (items.some(p => ['created', 'authorized'].includes(p.status))) return res.json({ status: o.status, processing: true });
   }
   res.json({ status: (await order.find(o.id)).status });
 });
