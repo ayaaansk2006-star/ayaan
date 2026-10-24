@@ -7,7 +7,13 @@
 .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
 .tabs button { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: none; color: #fff; font: inherit; cursor: pointer; }
 .tabs button.on { background: var(--lime); color: #000; font-weight: 700; border-color: var(--lime); }
-.ord { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.ord { border-bottom: 1px solid var(--line); }
+.ord summary { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; cursor: pointer; list-style: none; }
+.ord summary::-webkit-details-marker { display: none; }
+.ord summary::after { content: "▾"; color: var(--muted); transition: transform .25s; } .ord[open] summary::after { transform: rotate(180deg); }
+.ord-body { padding: 0 0 16px; display: grid; gap: 8px; animation: rise2 .3s ease-out; } .ord-body ul, .tl { padding-left: 18px; }
+.tl small, .ord-body small { color: var(--muted); }
+@keyframes rise2 { from { opacity: 0; transform: translateY(-6px); } }
 </style>
 <link rel="stylesheet" href="/css/polish.css?v=1">
 </head>
@@ -40,6 +46,6 @@
   </div>
 </main>
 <script src="/js/common.js?v=8"></script>
-<script src="/js/account.js?v=1"></script>
+<script src="/js/account.js?v=2"></script>
 </body>
 </html>

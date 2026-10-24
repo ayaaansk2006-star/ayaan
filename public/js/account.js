@@ -20,18 +20,28 @@ $('#auth').onsubmit = async e => {
   catch (err) { $('#aerr').textContent = err.message; }
 };
 
+// Full details of the signed-in customer's own order (the server only returns their orders).
+const date = d => new Date(d.replace(' ', 'T') + (d.includes('Z') ? '' : 'Z')).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+function orderCard(o, email) {
+  const items = o.items.map(i => `<li>${esc(i.title)} × ${i.qty}${(i.addons || []).map(a => `<br><small>+ ${esc(a.name || a)}</small>`).join('')}</li>`).join('');
+  return `<details class="ord"><summary><div><b class="lime">${esc(o.id)}</b><br><small>${date(o.created_at)} · Status: <b>${esc(o.status)}</b></small></div>
+    <b>${inr(o.total)}</b></summary><div class="ord-body">
+    <ul>${items}</ul>
+    <p><small>Courier charge ${inr(o.shipping || 0)} · Paid by ${esc(o.method || '')}</small></p>
+    <p><small>Ship to: ${esc(o.name)}, ${esc(o.phone)}<br>${esc(o.address)}, ${esc(o.city)}, ${esc(o.state)} ${esc(o.pincode)}</small></p>
+    ${o.awb ? `<p><small>Courier: <b>${esc(o.courier || '')}</b> · AWB <b>${esc(o.awb)}</b></small></p>` : ''}
+    <ol class="tl">${o.history.map(h => `<li><b>${esc(h.status)}</b> <small>${date(h.at)}</small></li>`).join('')}</ol>
+    ${o.status === 'Delivered' ? `<a class="lime" href="/review?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(email)}">Write a review</a>` : ''}
+  </div></details>`;
+}
+
 async function boot() {
   try {
     const [u, orders] = await Promise.all([api('/api/account/me'), api('/api/account/orders')]);
     $('#guest').style.display = 'none'; $('#me').style.display = '';
     $('#hello').textContent = `Signed in as ${u.email}`;
     FIELDS.forEach(k => $('#addr')[k].value = u[k] || '');
-    $('#orders').innerHTML = orders.length ? orders.map(o => `<div class="ord"><div>
-        <b class="lime">${esc(o.id)}</b><br><small>${new Date(o.created_at).toLocaleDateString('en-IN')} · ${o.items.map(i => esc(i.title)).join(', ')}</small>
-        <br><small>Status: <b>${esc(o.status)}</b></small></div>
-      <div style="text-align:right"><b>${inr(o.total)}</b><br>
-        <a class="lime" href="/track?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(u.email)}">Track</a>
-        ${o.status === 'Delivered' ? ` · <a class="lime" href="/review?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(u.email)}">Review</a>` : ''}</div></div>`).join('')
+    $('#orders').innerHTML = orders.length ? orders.map(o => orderCard(o, u.email)).join('')
       : '<p style="color:var(--muted)">No orders yet. <a class="lime" href="/#shop">Start shopping</a></p>';
   } catch { $('#guest').style.display = ''; $('#me').style.display = 'none'; }
 }

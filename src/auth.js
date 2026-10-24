@@ -74,7 +74,9 @@ r.patch('/me', async (req, res) => {
 });
 
 r.get('/orders', async (req, res) => {
-  const rows = await db.all('SELECT id, created_at, status, items, total, shipping FROM orders WHERE user_id=? ORDER BY created_at DESC', [req.uid]);
+  // Always scoped to the signed-in account's id from the signed cookie; no id from the request is trusted.
+  const rows = await db.all(`SELECT id, created_at, status, items, total, shipping, method, history, courier, awb,
+    name, phone, address, city, state, pincode FROM orders WHERE user_id=? ORDER BY created_at DESC`, [req.uid]);
   res.json(rows.map(db.parseOrder));
 });
 

@@ -21,6 +21,8 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   next();
 });
+// Personal data must never be stored by browsers or shared caches.
+app.use(['/api/account', '/api/admin', '/api/orders'], (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 app.use('/api/account', require('./src/auth'));
 app.use('/api', require('./src/uploads'));
 app.use('/api', require('./src/shop'));
