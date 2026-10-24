@@ -46,10 +46,15 @@ const list = [
   { slug: 're-classic-uce', bike: 'RE Classic 350 / Bullet (UCE)', brand: 'Royal Enfield', page: 13, idx: [2, 3, 5],
     title: 'RE Classic 350 / Bullet (UCE) GPS Mount', compat: 'Compatible with RE Himalayan 411 BS4 windshield',
     price: 2200, mrp_breakdown: 'GPS Mount ₹2200', note: '',
-    addons: [{ id: 'ws', name: 'RE Himalayan 411 BS4 Windshield', price: 580 }] }
+    addons: [{ id: 'ws', name: 'RE Himalayan 411 BS4 Windshield', price: 580 }] },
+  // Price 0 = "Price on request": shown with a WhatsApp button, not sellable until a price is set in admin.
+  { slug: 'himalayan-450-touring-windshield', bike: 'Himalayan 450 Touring Windshield', brand: 'Royal Enfield',
+    title: 'Royal Enfield Himalayan 450 Touring Windshield', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350',
+    price: 0, mrp_breakdown: 'Price on request', note: '', addons: [], kind: 'windshield',
+    images: ['/img/hw450_0.jpeg', '/img/hw450_1.jpeg'] }
 ];
 
-module.exports = list.map(({ page, n, idx, ...p }) => ({ ...p, images: imgs(page, idx || range(n)) }));
+module.exports = list.map(({ page, n, idx, ...p }) => ({ ...p, images: p.images || imgs(page, idx || range(n)) }));
 
 // Full-bike photo shown first on each card (index into that product's image list).
 const COVER = { 'scrambler-400-xpulse': 3, 'scrambler-400-re450': 4, 'speed-400-xpulse': 5, 'speed-400-re450': 4,

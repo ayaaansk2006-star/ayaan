@@ -58,10 +58,11 @@ async function setup() {
     !pc.includes('seeded_price') && 'UPDATE products SET seeded_price=price'
   ].filter(Boolean);
   if (alters.length) await client.batch(alters, 'write');
-  // A catalog price change overrides the live price once; admin edits persist until the catalog changes again.
+  // Text/photos always follow the catalog. A catalog price change overrides the live price once; admin price edits persist until then.
   await client.batch(catalog.map((p, i) => ({
     sql: `INSERT INTO products (slug,bike,brand,title,compat,price,mrp_breakdown,note,addons,images,sort,seeded_price)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET images=excluded.images,
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(slug) DO UPDATE SET images=excluded.images, bike=excluded.bike, brand=excluded.brand, title=excluded.title,
+     compat=excluded.compat, mrp_breakdown=excluded.mrp_breakdown, note=excluded.note, addons=excluded.addons, sort=excluded.sort,
      price=CASE WHEN products.seeded_price IS NOT excluded.seeded_price THEN excluded.price ELSE products.price END,
      seeded_price=excluded.seeded_price`,
     args: [p.slug, p.bike, p.brand, p.title, p.compat, p.price, p.mrp_breakdown, p.note,
@@ -74,8 +75,9 @@ let ready;
 const init = () => (ready ||= setup().catch(e => { ready = null; throw e; }));
 
 // Variants (e.g. BS3/BS4/BS6) come straight from the catalog; they change fitting, not price.
-const variantsOf = slug => catalog.find(c => c.slug === slug)?.variants || [];
-const parseProduct = p => p && { ...p, addons: JSON.parse(p.addons), images: JSON.parse(p.images), active: !!p.active, variants: variantsOf(p.slug) };
+const meta = slug => catalog.find(c => c.slug === slug) || {};
+const parseProduct = p => p && { ...p, addons: JSON.parse(p.addons), images: JSON.parse(p.images), active: !!p.active,
+  variants: meta(p.slug).variants || [], kind: meta(p.slug).kind || 'mount' };
 const parseOrder = o => o && { ...o, items: JSON.parse(o.items), history: JSON.parse(o.history || '[]') };
 // Append to the status timeline; runs after a status UPDATE so it records the new status.
 const logStatus = id => run(`UPDATE orders SET history=json_insert(COALESCE(history,'[]'),'$[#]',json_object('status',status,'at',datetime('now'))) WHERE id=?`, [id]);

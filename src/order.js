@@ -9,6 +9,7 @@ async function price(items, pincode) {
   const lines = await Promise.all(items.map(async it => {
     const p = db.parseProduct(await db.get('SELECT * FROM products WHERE slug=? AND active=1', [String(it.slug)]));
     if (!p) throw new Error('A product in your cart is no longer available');
+    if (!(p.price > 0)) throw new Error(`${p.title} is available on request. Please WhatsApp us for the price.`);
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const addons = p.addons.filter(a => (it.addons || []).includes(a.id));
     const unit = p.price + addons.reduce((s, a) => s + a.price, 0);

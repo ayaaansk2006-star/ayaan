@@ -10,7 +10,7 @@ function list() {
 }
 
 function quickAdd(p) {
-  if (p.addons.length || p.variants.length) return openProduct(p);
+  if (!p.price || p.addons.length || p.variants.length) return openProduct(p);
   Cart.add({ slug: p.slug, title: p.title, image: p.images[0], qty: 1, unit: p.price, addons: [], addonNames: '' });
 }
 
@@ -24,7 +24,7 @@ function renderGrid() {
       <button class="quick" data-q="${esc(p.slug)}" aria-label="Quick add ${esc(p.title)}">+</button></div>
     <div class="body"><span class="tag">${esc(p.bike)}</span><h3>${esc(p.title)}</h3>
     <small>${esc(p.compat)}</small>
-    <div class="row" style="margin-top:auto"><div class="price">${inr(p.price)}</div><small>${p.images.length} photos</small></div></div></div>`).join('')
+    <div class="row" style="margin-top:auto"><div class="price">${p.price ? inr(p.price) : '<span style="font-size:16px">Price on request</span>'}</div><small>${p.images.length} photos</small></div></div></div>`).join('')
     || '<p style="color:var(--muted)">No parts found. WhatsApp us — we may still fit your bike!</p>';
   document.querySelectorAll('.card').forEach(c => c.onclick = e => {
     const p = products.find(x => x.slug === c.dataset.slug);
