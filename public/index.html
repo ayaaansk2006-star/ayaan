@@ -6,7 +6,7 @@
 <meta name="description" content="Premium GPS mounts and windshields for Triumph Scrambler 400X, Speed 400, T4, Royal Enfield Himalayan, Hunter, Meteor, Classic, Scram and Hero Xpulse.">
 <meta name="theme-color" content="#0a0a0a">
 <meta property="og:title" content="Altitude Moto"><meta property="og:image" content="/logo.png?v=2">
-<link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=7"><link rel="stylesheet" href="/css/home.css?v=12">
+<link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=7"><link rel="stylesheet" href="/css/home.css?v=13">
 </head>
 <body>
 <div class="progress" id="progress"></div>
@@ -151,14 +151,16 @@
 <div class="modal" id="modal"><div class="box" id="modal-box"></div></div>
 
 <aside class="drawer" id="drawer">
-  <header><h3 class="display">Your Cart</h3><button class="close" style="position:static" data-close-cart>×</button></header>
+  <header><h3 class="display">Your Cart <small class="cart-n" id="cart-n"></small></h3><button class="close" style="position:static" data-close-cart aria-label="Close cart">×</button></header>
   <div class="items" id="cart-items"></div>
-  <footer><div class="row" style="margin-bottom:14px"><span>Total</span><b class="lime display" id="cart-total">₹0</b></div>
-    <a href="/checkout" class="btn" id="checkout-btn" style="width:100%">Checkout →</a></footer>
+  <footer id="cart-foot"><div class="row"><span>Subtotal</span><b class="lime display" id="cart-total">₹0</b></div>
+    <p class="cart-note">Courier charge is added at checkout from your pincode.</p>
+    <a href="/checkout" class="btn" id="checkout-btn" style="width:100%">Checkout →</a>
+    <p class="cart-trust">Secure payment via Razorpay · All bushes, nuts &amp; bolts included</p></footer>
 </aside>
 <div class="scrim" id="scrim" data-close-cart></div>
 
-<script src="/js/common.js?v=7"></script>
+<script src="/js/common.js?v=8"></script>
 <script src="/js/product.js?v=8"></script>
 <script src="/js/shop.js?v=7"></script>
 <script src="/js/ui.js?v=1"></script>

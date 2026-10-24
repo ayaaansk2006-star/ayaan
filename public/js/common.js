@@ -14,6 +14,7 @@ const Cart = {
     toast('Added to cart');
   },
   remove(key) { Cart.set(Cart.get().filter(i => i.key !== key)); },
+  setQty(key, n) { Cart.set(Cart.get().map(i => i.key === key ? { ...i, qty: Math.min(Math.max(n, 1), 10) } : i)); },
   clear() { localStorage.removeItem('am_cart'); Cart.render(); },
   render() {
     const c = Cart.get();
@@ -21,13 +22,20 @@ const Cart = {
     document.querySelectorAll('.cart-count').forEach(e => e.textContent = n);
     const box = $('#cart-items');
     if (!box) return;
-    box.innerHTML = c.length ? c.map(i => `<div class="line"><img src="${esc(i.image)}" alt="">
-      <div><b>${esc(i.title)}</b><br><small class="lime">${esc(i.addonNames || '')}</small>
-      <br><small>Qty ${i.qty} · ${inr(i.unit)}</small> <button class="rm" data-key="${esc(i.key)}">remove</button></div>
-      <b>${inr(i.unit * i.qty)}</b></div>`).join('') : '<p style="color:var(--muted);padding:20px 0">Your cart is empty.</p>';
-    box.querySelectorAll('.rm').forEach(b => b.onclick = () => Cart.remove(b.dataset.key));
+    const BIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>';
+    box.innerHTML = c.length ? c.map(i => `<div class="cline"><img src="${esc(i.image)}" alt="">
+      <div class="cinfo"><b>${esc(i.title)}</b>${i.addonNames ? `<small class="lime">${esc(i.addonNames)}</small>` : ''}
+        <small>${inr(i.unit)} each</small>
+        <div class="cqty"><button data-dec="${esc(i.key)}" aria-label="Less">−</button><b>${i.qty}</b><button data-inc="${esc(i.key)}" aria-label="More">+</button></div></div>
+      <div class="cright"><b>${inr(i.unit * i.qty)}</b><button class="cbin" data-key="${esc(i.key)}" aria-label="Remove ${esc(i.title)}">${BIN}</button></div></div>`).join('')
+      : `<div class="cempty"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6 5 3H2"/></svg>
+        <b>Your cart is empty</b><small>Find the right mount for your bike.</small><a href="/#shop" class="btn" data-close-cart>Shop by bike →</a></div>`;
+    box.querySelectorAll('.cbin').forEach(b => b.onclick = () => Cart.remove(b.dataset.key));
+    box.querySelectorAll('[data-dec]').forEach(b => b.onclick = () => Cart.setQty(b.dataset.dec, c.find(i => i.key === b.dataset.dec).qty - 1));
+    box.querySelectorAll('[data-inc]').forEach(b => b.onclick = () => Cart.setQty(b.dataset.inc, c.find(i => i.key === b.dataset.inc).qty + 1));
     $('#cart-total').textContent = inr(c.reduce((s, i) => s + i.unit * i.qty, 0));
-    $('#checkout-btn').style.display = c.length ? '' : 'none';
+    if ($('#cart-n')) $('#cart-n').textContent = n ? `(${n} item${n > 1 ? 's' : ''})` : '';
+    if ($('#cart-foot')) $('#cart-foot').style.display = c.length ? '' : 'none';
   }
 };
 
@@ -49,7 +57,7 @@ async function api(url, opts = {}) {
 document.addEventListener('DOMContentLoaded', () => {
   const d = $('#drawer');
   document.querySelectorAll('[data-open-cart]').forEach(b => b.onclick = () => d.classList.add('open'));
-  document.querySelectorAll('[data-close-cart]').forEach(b => b.onclick = () => d.classList.remove('open'));
+  document.addEventListener('click', e => { if (d && e.target.closest('[data-close-cart]')) d.classList.remove('open'); });
   Cart.render();
 });
 
