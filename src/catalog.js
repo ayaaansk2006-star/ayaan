@@ -39,10 +39,15 @@ const list = [
     price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '', addons: [] },
   { slug: 'hero-xpulse-210', bike: 'Hero Xpulse 210', brand: 'Hero', page: 11, n: 8,
     title: 'Hero Xpulse 210 GPS Mount', compat: 'Compatible with Hero Xpulse 210 windshield',
-    price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '', addons: [] },
+    price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '',
+    // ₹550 = Xpulse 210 windshield price from the kit breakdown (GPS Mount ₹3300 + Windshield ₹550).
+    addons: [{ id: 'ws', name: 'Hero Xpulse 210 Windshield', price: 550 }] },
   { slug: 're-himalayan-411', bike: 'RE Himalayan 411 (BS3/BS4/BS6)', brand: 'Royal Enfield', page: 12, n: 5,
     title: 'RE Himalayan 411 GPS Mount', compat: 'Compatible with Himalayan 411 BS4/BS6 (up to 2021) windshield',
-    price: 1500, mrp_breakdown: 'GPS Mount ₹1500', note: '', addons: [],
+    price: 1500, mrp_breakdown: 'GPS Mount ₹1500', note: 'Windshield is optional. Tick one below to add it, or leave both unticked for the mount only.',
+    // Windshield prices as listed for the Classic mounts (same RE Himalayan 411 windshields).
+    addons: [{ id: 'ws4', name: 'RE Himalayan 411 BS4 Windshield', price: 580, group: 'ws' },
+      { id: 'ws6', name: 'RE Himalayan BS6 Windshield', price: 680, group: 'ws' }],
     variants: ['BS3', 'BS4', 'BS6'] }, // fitting differs per BS version; same price
   { slug: 're-classic-reborn', bike: 'RE Classic 350 Reborn', brand: 'Royal Enfield', page: 13, idx: [0, 4, 1],
     title: 'RE Classic 350 (Reborn) GPS Mount', compat: 'Compatible with RE Himalayan BS6 windshield',
