@@ -50,7 +50,7 @@ const done = async (id, email) => {
   Cart.clear();
   location.href = `/track?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&new=1`;
 };
-const fail = msg => { $('#err').textContent = msg; $('#place').disabled = false; };
+const fail = msg => { $('#err').textContent = msg; $('#place').disabled = false; showPm(); };
 
 function loadRzp() {
   return window.Razorpay ? Promise.resolve() : new Promise((ok, no) => {
@@ -80,7 +80,10 @@ async function payOnline(body) {
 async function payQr(body) {
   const o = await api('/api/razorpay/qr', { method: 'POST', body });
   $('#qr').src = o.image;
-  if (o.upiLink) { $('#qr-wait').insertAdjacentHTML('afterend', `<a class="btn" href="${esc(o.upiLink)}" style="margin:10px 0">On this phone? Tap to pay in your UPI app</a>`); }
+  const q = `?email=${encodeURIComponent(o.email)}`;
+  api(`/api/razorpay/qr/${encodeURIComponent(o.id)}/link${q}`).then(l => {
+    if (l.upiLink) $('#qr-wait').insertAdjacentHTML('afterend', `<a class="btn" href="${esc(l.upiLink)}" style="margin:10px 0">On this phone? Tap to pay in your UPI app</a>`);
+  }).catch(() => {});
   $('#qr-manual').style.display = 'none'; $('#qr-wait').style.display = '';
   $('#qr-box').style.display = ''; $('#place').style.display = 'none';
   form.querySelectorAll('input, select, textarea').forEach(i => i.disabled = true);
@@ -102,7 +105,7 @@ form.onsubmit = async e => {
   const body = { ...Object.fromEntries(new FormData(form)), items };
   try {
     if (pm() === 'rzp') return await payOnline(body);
-    if (auto) return await payQr(body);
+    if (auto) { $('#place').textContent = 'Creating your QR…'; return await payQr(body); }
     const { id } = await api('/api/orders', { method: 'POST', body });
     done(id, body.email);
   } catch (err) { fail(err.message); }

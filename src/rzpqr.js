@@ -44,9 +44,17 @@ r.post('/razorpay/qr', async (req, res) => {
       await db.run("UPDATE orders SET status='Cancelled' WHERE id=?", [o.id]);
       return res.status(502).json({ error: 'Could not create the QR code, please try again' });
     }
-    const [, link] = await Promise.all([db.run('UPDATE orders SET rzp_order_id=? WHERE id=?', [qr.id, o.id]), upiLink(qr.image_url)]);
-    res.json({ id: o.id, email: c.email, image: qr.image_url, amount: o.total, upiLink: link });
+    await db.run('UPDATE orders SET rzp_order_id=? WHERE id=?', [qr.id, o.id]);
+    res.json({ id: o.id, email: c.email, image: qr.image_url, amount: o.total });
   } catch (e) { res.status(400).json({ error: e.message }); }
+});
+
+// Tap-to-pay link for phone users, fetched after the QR is already on screen (decoding takes ~2s).
+r.get('/razorpay/qr/:id/link', async (req, res) => {
+  const o = await order.find(req.params.id);
+  if (!o || o.email !== String(req.query.email || '').toLowerCase() || !o.rzp_order_id?.startsWith('qr_')) return res.status(404).json({ error: 'Order not found' });
+  const qr = await call(`/payments/qr_codes/${o.rzp_order_id}`).catch(() => null);
+  res.json({ upiLink: qr ? await upiLink(qr.image_url) : null });
 });
 
 // Asks Razorpay whether this order's QR has been paid the full amount.
