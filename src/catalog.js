@@ -26,8 +26,7 @@ const list = [
   { ...re450('t4-re450', 'Triumph Speed T4', 'Triumph', 6), idx: [1, 2, 3, 4] },
   re450('re-scram-440-411', 'RE Scram 440 / 411', 'Royal Enfield', 7, 4),
   re450('re-hunter-350', 'RE Hunter 350', 'Royal Enfield', 8, 5),
-  // Price 0 = "Price on request" until a price is set in admin (no price given yet).
-  { ...re450('re-guerrilla-450', 'RE Guerrilla 450', 'Royal Enfield'), price: 0, mrp_breakdown: 'Price on request',
+  { ...re450('re-guerrilla-450', 'RE Guerrilla 450', 'Royal Enfield'), price: 2800, mrp_breakdown: 'GPS Mount ₹2800',
     images: [0, 1, 2, 3, 4, 5, 6, 7].map(i => `/img/guerrilla450_${i}.jpeg`) },
   { slug: 're-meteor-350', bike: 'RE Meteor 350', brand: 'Royal Enfield', page: 9, n: 6,
     title: 'RE Meteor 350 GPS Mount', compat: 'Compatible with RE Meteor 350 windshield only',
@@ -50,10 +49,10 @@ const list = [
     title: 'RE Classic 350 / Bullet (UCE) GPS Mount', compat: 'Compatible with RE Himalayan 411 BS4 windshield',
     price: 2200, mrp_breakdown: 'GPS Mount ₹2200', note: '',
     addons: [{ id: 'ws', name: 'RE Himalayan 411 BS4 Windshield', price: 580 }] },
-  // Price 0 = "Price on request": shown with a WhatsApp button, not sellable until a price is set in admin.
+  // A price of 0 would show "Price on request" with a WhatsApp button instead of Add to Cart.
   { slug: 'himalayan-450-touring-windshield', bike: 'Himalayan 450 Touring Windshield', brand: 'Royal Enfield',
     title: 'Royal Enfield Himalayan 450 Touring Windshield', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350, RE Guerrilla 450',
-    price: 0, mrp_breakdown: 'Price on request', note: '', addons: [], kind: 'windshield',
+    price: 3220, mrp_breakdown: 'Windshield ₹3220', note: '', addons: [], kind: 'windshield',
     images: ['/img/hw450_0.jpeg', '/img/hw450_1.jpeg'] }
 ];
 
