@@ -126,6 +126,7 @@ async function payQr(body) {
 form.onsubmit = async e => {
   e.preventDefault();
   $('#err').textContent = ''; $('#place').disabled = true;
+  if (!shipped) await quote(); // pincode typed just now: price it before deciding
   if (!shipped) return fail('Enter a valid 6-digit pincode to see the courier charge');
   const body = { ...Object.fromEntries(new FormData(form)), items };
   try {
