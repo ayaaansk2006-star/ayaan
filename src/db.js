@@ -26,34 +26,38 @@ const cols = async t => (await all(`PRAGMA table_info(${t})`)).map(c => c.name);
 
 async function setup() {
   connect();
-  await run(`CREATE TABLE IF NOT EXISTS products (
+  // One round trip for all tables, then column checks in parallel: keeps serverless cold starts short.
+  await client.batch([
+    `CREATE TABLE IF NOT EXISTS products (
     slug TEXT PRIMARY KEY, bike TEXT, brand TEXT, title TEXT, compat TEXT, price INTEGER,
-    mrp_breakdown TEXT, note TEXT, addons TEXT, images TEXT, active INTEGER DEFAULT 1, sort INTEGER)`);
-  await run(`CREATE TABLE IF NOT EXISTS orders (
+    mrp_breakdown TEXT, note TEXT, addons TEXT, images TEXT, active INTEGER DEFAULT 1, sort INTEGER)`,
+    `CREATE TABLE IF NOT EXISTS orders (
     id TEXT PRIMARY KEY, created_at TEXT, name TEXT, email TEXT, phone TEXT, address TEXT,
     city TEXT, state TEXT, pincode TEXT, items TEXT, total INTEGER, utr TEXT,
-    status TEXT DEFAULT 'Payment Verification Pending', notes TEXT)`);
-  const oc = await cols('orders');
-  if (!oc.includes('method')) await run("ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'");
-  if (!oc.includes('rzp_order_id')) await run('ALTER TABLE orders ADD COLUMN rzp_order_id TEXT');
-  if (!oc.includes('user_id')) await run('ALTER TABLE orders ADD COLUMN user_id INTEGER');
-  if (!oc.includes('awb')) { await run('ALTER TABLE orders ADD COLUMN courier TEXT'); await run('ALTER TABLE orders ADD COLUMN awb TEXT'); }
-  if (!oc.includes('history')) await run("ALTER TABLE orders ADD COLUMN history TEXT DEFAULT '[]'");
-  if (!oc.includes('shipping')) await run('ALTER TABLE orders ADD COLUMN shipping INTEGER DEFAULT 0');
-  await run(`CREATE TABLE IF NOT EXISTS reviews (
+    status TEXT DEFAULT 'Payment Verification Pending', notes TEXT)`,
+    `CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, order_id TEXT, name TEXT, rating INTEGER,
-    text TEXT, approved INTEGER DEFAULT 0, created_at TEXT, UNIQUE(order_id, slug))`);
-  if (!(await cols('reviews')).includes('media')) await run("ALTER TABLE reviews ADD COLUMN media TEXT DEFAULT '[]'");
-  await run(`CREATE TABLE IF NOT EXISTS users (
+    text TEXT, approved INTEGER DEFAULT 0, created_at TEXT, UNIQUE(order_id, slug))`,
+    `CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, pass TEXT, name TEXT, phone TEXT,
-    address TEXT, city TEXT, state TEXT, pincode TEXT, created_at TEXT)`);
-  await run('CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, caption TEXT, created_at TEXT)');
-  const pc = await cols('products');
-  if (!pc.includes('video')) await run('ALTER TABLE products ADD COLUMN video TEXT');
-  if (!pc.includes('seeded_price')) {
-    await run('ALTER TABLE products ADD COLUMN seeded_price INTEGER');
-    await run('UPDATE products SET seeded_price=price');
-  }
+    address TEXT, city TEXT, state TEXT, pincode TEXT, created_at TEXT)`,
+    'CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, caption TEXT, created_at TEXT)'
+  ], 'write');
+  const [oc, rc, pc] = await Promise.all([cols('orders'), cols('reviews'), cols('products')]);
+  const alters = [
+    !oc.includes('method') && "ALTER TABLE orders ADD COLUMN method TEXT DEFAULT 'UPI QR'",
+    !oc.includes('rzp_order_id') && 'ALTER TABLE orders ADD COLUMN rzp_order_id TEXT',
+    !oc.includes('user_id') && 'ALTER TABLE orders ADD COLUMN user_id INTEGER',
+    !oc.includes('awb') && 'ALTER TABLE orders ADD COLUMN courier TEXT',
+    !oc.includes('awb') && 'ALTER TABLE orders ADD COLUMN awb TEXT',
+    !oc.includes('history') && "ALTER TABLE orders ADD COLUMN history TEXT DEFAULT '[]'",
+    !oc.includes('shipping') && 'ALTER TABLE orders ADD COLUMN shipping INTEGER DEFAULT 0',
+    !rc.includes('media') && "ALTER TABLE reviews ADD COLUMN media TEXT DEFAULT '[]'",
+    !pc.includes('video') && 'ALTER TABLE products ADD COLUMN video TEXT',
+    !pc.includes('seeded_price') && 'ALTER TABLE products ADD COLUMN seeded_price INTEGER',
+    !pc.includes('seeded_price') && 'UPDATE products SET seeded_price=price'
+  ].filter(Boolean);
+  if (alters.length) await client.batch(alters, 'write');
   // A catalog price change overrides the live price once; admin edits persist until the catalog changes again.
   await client.batch(catalog.map((p, i) => ({
     sql: `INSERT INTO products (slug,bike,brand,title,compat,price,mrp_breakdown,note,addons,images,sort,seeded_price)

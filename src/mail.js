@@ -40,10 +40,15 @@ async function send(to, subject, html) {
   } catch (e) { console.error('mail failed:', e.message); }
 }
 
+// Emails go out in the background so payment confirmation never waits on Gmail.
+// On Vercel, waitUntil keeps the function alive until sending finishes.
+const { waitUntil } = require('@vercel/functions');
+const bg = p => { try { waitUntil(p); } catch { p.catch(() => {}); } };
+
 module.exports = {
-  orderPlaced: o => Promise.all([
+  orderPlaced: o => bg(Promise.all([
     send(o.email, `Order ${o.id} received — Altitude Moto`, orderHtml(o, 'Thanks for your order!')),
     process.env.ADMIN_EMAIL && send(process.env.ADMIN_EMAIL, `New order ${o.id} — ${inr(o.total)}`, orderHtml(o, 'New order placed'))
-  ]),
-  statusChanged: o => send(o.email, `Order ${o.id}: ${o.status} — Altitude Moto`, orderHtml(o, `Your order is now: ${o.status}`))
+  ])),
+  statusChanged: o => bg(send(o.email, `Order ${o.id}: ${o.status} — Altitude Moto`, orderHtml(o, `Your order is now: ${o.status}`)))
 };

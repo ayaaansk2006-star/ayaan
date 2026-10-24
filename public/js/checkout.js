@@ -90,9 +90,9 @@ async function payQr(body) {
     const s = await api(`/api/razorpay/qr/${encodeURIComponent(o.id)}/status?email=${encodeURIComponent(o.email)}`).catch(() => ({}));
     if (s.status && s.status !== 'Awaiting Payment') return done(o.id, o.email);
     if (Date.now() - started > 30 * 60e3) return fail('QR expired. Refresh the page to try again.');
-    setTimeout(poll, 4000);
+    setTimeout(poll, 2000);
   };
-  setTimeout(poll, 4000);
+  setTimeout(poll, 2000);
 }
 
 form.onsubmit = async e => {

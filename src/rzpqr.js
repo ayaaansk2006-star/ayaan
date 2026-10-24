@@ -44,8 +44,8 @@ r.post('/razorpay/qr', async (req, res) => {
       await db.run("UPDATE orders SET status='Cancelled' WHERE id=?", [o.id]);
       return res.status(502).json({ error: 'Could not create the QR code, please try again' });
     }
-    await db.run('UPDATE orders SET rzp_order_id=? WHERE id=?', [qr.id, o.id]);
-    res.json({ id: o.id, email: c.email, image: qr.image_url, amount: o.total, upiLink: await upiLink(qr.image_url) });
+    const [, link] = await Promise.all([db.run('UPDATE orders SET rzp_order_id=? WHERE id=?', [qr.id, o.id]), upiLink(qr.image_url)]);
+    res.json({ id: o.id, email: c.email, image: qr.image_url, amount: o.total, upiLink: link });
   } catch (e) { res.status(400).json({ error: e.message }); }
 });
 
