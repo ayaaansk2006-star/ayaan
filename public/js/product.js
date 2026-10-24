@@ -21,8 +21,8 @@ function openProduct(p) {
   <div class="detail"><span class="tag">${esc(p.bike)}</span><h2>${esc(p.title)}</h2>
     <div class="display lime" style="font-size:32px" id="mprice">${inr(p.price)}</div>
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
-    ${p.variants.length ? `<fieldset class="variant"><legend><b>Emission standard of your bike <span class="lime">*</span></b></legend><small>Tick one. Fitting is different for each, price is the same.</small>
-      <div class="ticks">${p.variants.map(v => `<label class="tick"><input type="checkbox" name="bs" value="${esc(v)}"><span class="box"></span>${esc(v)}</label>`).join('')}</div></fieldset>` : ''}
+    ${p.variants.length ? `<fieldset class="variant"><legend><b style="white-space:nowrap">Emission standard (BS) <span class="lime">*</span></b></legend><small>Tick one. Fitting is different for each, price is the same.</small>
+      <div class="ticks">${p.variants.map(v => `<label class="tick"><input type="checkbox" name="bs" value="${esc(v)}"><span class="tbox"></span>${esc(v)}</label>`).join('')}</div></fieldset>` : ''}
     ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
     <div class="qty"><button id="qm" aria-label="Less">−</button><b id="qv">1</b><button id="qp" aria-label="More">+</button></div>
     <button class="btn" id="addcart">Add to Cart</button>

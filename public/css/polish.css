@@ -1,0 +1,107 @@
+/* Visual polish layer: loaded last on every page. Looks only — no layout logic depends on it. */
+:root { --card: #131313; --card2: #181818; --line: #252525; --glow: rgba(254,245,2,.14); --r: 18px; }
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(254,245,2,.06), transparent 60%),
+    radial-gradient(900px 500px at -10% 40%, rgba(254,245,2,.035), transparent 60%),
+    #090909;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+::selection { background: var(--lime); color: #000; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0b0b0b; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 10px; border: 2px solid #0b0b0b; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; border-radius: 6px; }
+
+/* Header */
+header.top { background: rgba(9,9,9,.72); backdrop-filter: saturate(160%) blur(16px); border-bottom-color: rgba(255,255,255,.06); }
+nav.links a { position: relative; padding: 6px 0; color: #d8d8d8; transition: color .2s; }
+nav.links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform .25s; border-radius: 2px; }
+nav.links a:hover::after { transform: scaleX(1); }
+.cart-btn { transition: transform .15s, box-shadow .2s; }
+.cart-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(254,245,2,.3); }
+
+/* Buttons: subtle shine sweep + press feedback */
+.btn { position: relative; overflow: hidden; border-radius: 12px; letter-spacing: .2px; }
+.btn:not(.ghost)::before { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-20deg); transition: left .6s; }
+.btn:not(.ghost):hover::before { left: 120%; }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn.ghost { background: rgba(254,245,2,.03); }
+.btn.ghost:hover { background: rgba(254,245,2,.1); box-shadow: none; }
+
+/* Surfaces */
+.panel, .card, .modal .box, .drawer, .finder-card { border-radius: var(--r); }
+.panel { background: linear-gradient(180deg, var(--card2), var(--card)); box-shadow: 0 20px 50px -30px rgba(0,0,0,.8); }
+
+/* Product cards */
+.card { background: linear-gradient(180deg, #161616, #111); box-shadow: 0 18px 40px -28px rgba(0,0,0,.9); transition: transform .25s, border-color .25s, box-shadow .25s; }
+.card:hover { transform: translateY(-6px); border-color: rgba(254,245,2,.55); box-shadow: 0 26px 60px -30px rgba(254,245,2,.35); }
+.card .ph { position: relative; }
+.card .ph::after { content: ""; position: absolute; inset: auto 0 0 0; height: 45%; background: linear-gradient(transparent, rgba(0,0,0,.55)); pointer-events: none; }
+.card .ph::before { content: "View details →"; position: absolute; z-index: 2; left: 14px; bottom: 12px; font-size: 13px; font-weight: 700; color: #fff; opacity: 0; transform: translateY(6px); transition: .25s; }
+.card:hover .ph::before { opacity: 1; transform: none; }
+.card h3 { line-height: 1.35; }
+.card .price { font-size: 24px; letter-spacing: -.3px; }
+.badge { box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+
+/* Section titles */
+.section-title { letter-spacing: .5px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--lime); border-radius: 2px; }
+
+/* Filters */
+.filters button { transition: background .2s, border-color .2s, color .2s; }
+.filters button:hover:not(.on) { border-color: #3a3a3a; color: #fff; }
+.filters input:focus { outline: none; border-color: var(--lime); box-shadow: 0 0 0 4px var(--glow); }
+
+/* Forms */
+.form input, .form textarea, .form select { background: #0c0c0c; border-color: #262626; transition: border-color .2s, box-shadow .2s; }
+.form input:hover, .form textarea:hover, .form select:hover { border-color: #333; }
+.form input:focus, .form textarea:focus, .form select:focus { outline: none; border-color: var(--lime); box-shadow: 0 0 0 4px var(--glow); }
+.form label { font-weight: 500; }
+.addon { transition: border-color .2s, background .2s; }
+.addon:hover { border-color: #3a3a3a; }
+.addon:has(input:checked) { border-color: var(--lime); background: rgba(254,245,2,.05); }
+input[type=radio], input[type=checkbox] { accent-color: var(--lime); width: 18px; height: 18px; }
+
+/* Modal */
+.modal { background: rgba(0,0,0,.72); backdrop-filter: blur(6px); }
+.modal.open .box { animation: pop .25s ease-out; }
+@keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+.close { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; transition: background .2s; }
+.close:hover { background: rgba(255,255,255,.08); }
+
+/* Drawer */
+.drawer { border-radius: 0; box-shadow: -30px 0 60px rgba(0,0,0,.5); }
+
+/* Toast */
+.toast { border-radius: 12px; box-shadow: 0 12px 34px rgba(0,0,0,.5); animation: rise .25s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translate(-50%, 10px); } }
+
+/* Footer */
+footer.site { background: linear-gradient(180deg, transparent, rgba(254,245,2,.025)); }
+
+/* Checkout step badges + order summary */
+.step i { box-shadow: 0 0 0 5px var(--glow); }
+.line img { border-radius: 10px; }
+
+/* Mobile comfort: bigger tap targets */
+@media (max-width: 820px) {
+  .btn { padding: 15px 22px; }
+  .filters button { padding: 10px 16px; }
+  .card .ph::before { display: none; }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Small phones: keep the brand on one line and the WhatsApp bubble out of the text */
+@media (max-width: 480px) {
+  .brand { font-size: 16px; white-space: nowrap; gap: 8px; }
+  .brand img { width: 34px; height: 34px; }
+  .float-wa { width: 48px; height: 48px; bottom: 84px; left: 14px; }
+}
