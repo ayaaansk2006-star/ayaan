@@ -29,6 +29,7 @@ api('/api/account/me').then(u => {
   signedIn = true;
   $('#acct').innerHTML = `Signed in as <b>${esc(u.email)}</b>. This order will appear in <a class="lime" href="/account">My Account</a>.`;
   form.email.value = u.email;
+  $('#pwRow').remove();
   ['name', 'phone', 'address', 'city', 'state', 'pincode'].forEach(k => { if (u[k] && !form[k].value) form[k].value = u[k]; });
   if (u.pincode) quote();
 }).catch(() => {});
@@ -98,13 +99,26 @@ async function payQr(body) {
   setTimeout(poll, 2000);
 }
 
+// Optional password at checkout: creates the account (or signs in to an existing one) so this order is saved to it.
+async function account(b, password) {
+  const creds = { name: b.name, email: b.email, password };
+  try { await api('/api/account/signup', { method: 'POST', body: creds }); }
+  catch (e) {
+    if (!/already exists/.test(e.message)) throw e;
+    await api('/api/account/login', { method: 'POST', body: creds })
+      .catch(() => { throw new Error('An account with this email already exists and the password is wrong. Fix the password or leave it empty to order as guest.'); });
+  }
+  signedIn = true;
+}
+
 form.onsubmit = async e => {
   e.preventDefault();
   $('#err').textContent = ''; $('#place').disabled = true;
   if (!shipped) await quote(); // pincode typed just now: price it before deciding
   if (!shipped) return fail('Enter a valid 6-digit pincode to see the courier charge');
-  const body = { ...Object.fromEntries(new FormData(form)), items };
+  const { password, ...fields } = Object.fromEntries(new FormData(form)), body = { ...fields, items };
   try {
+    if (password && !signedIn) await account(body, password);
     if (pm() === 'rzp') return await payOnline(body);
     if (auto) { $('#place').textContent = 'Creating your QR…'; return await payQr(body); }
     const { id } = await api('/api/orders', { method: 'POST', body });

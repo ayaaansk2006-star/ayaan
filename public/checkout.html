@@ -27,6 +27,7 @@
       <label>Mobile number<input name="phone" required inputmode="numeric" placeholder="10-digit"></label></div>
     <p id="acct" style="font-size:14px;color:var(--muted)"><a class="lime" href="/account">Sign in</a> to save your address and see all your orders, or continue as guest.</p>
     <label>Email (order confirmation is sent here)<input name="email" type="email" required></label>
+    <label id="pwRow">Create a password (optional) — saves your details and shows all your orders in My Account<input name="password" type="password" minlength="8" autocomplete="new-password" placeholder="8+ characters, or leave empty to order as guest"></label>
     <label>Address<textarea name="address" rows="2" required maxlength="300"></textarea></label>
     <div class="two"><label>City<input name="city" required></label><label>State<input name="state" required></label></div>
     <div class="two"><label>Pincode<input name="pincode" required inputmode="numeric" maxlength="6"></label>
@@ -67,6 +68,6 @@
 </main>
 
 <script src="/js/common.js?v=8"></script>
-<script src="/js/checkout.js?v=9"></script>
+<script src="/js/checkout.js?v=10"></script>
 </body>
 </html>
