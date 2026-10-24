@@ -12,6 +12,8 @@ async function price(items, pincode) {
     if (!(p.price > 0)) throw new Error(`${p.title} is available on request. Please WhatsApp us for the price.`);
     const qty = Math.min(Math.max(parseInt(it.qty, 10) || 1, 1), 10);
     const addons = p.addons.filter(a => (it.addons || []).includes(a.id));
+    const groups = addons.map(a => a.group).filter(Boolean);
+    if (new Set(groups).size !== groups.length) throw new Error(`Choose only one windshield for ${p.title}`);
     const unit = p.price + addons.reduce((s, a) => s + a.price, 0);
     const variant = p.variants.length ? String(it.variant || '') : '';
     if (p.variants.length && !p.variants.includes(variant)) throw new Error(`Choose the ${p.variants.join('/')} version for ${p.title}`);

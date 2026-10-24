@@ -2,8 +2,10 @@ const imgs = (page, idx) => idx.map(i => `/img/p${page}_${i}.jpeg`);
 const range = n => [...Array(n).keys()];
 
 const XP_NOTE = 'The GPS mount is not sold separately. It comes with the compatible Hero Xpulse 210 windshield because it requires minor modifications during the windshield installation.';
-const RE_NOTE = 'Windshield is optional. Tick the original Himalayan 450 Touring Windshield below to add it, or leave it unticked for the mount only.';
-const WS450 = { id: 'ws450', name: 'Original Himalayan 450 Touring Windshield', price: 3220 };
+const RE_NOTE = 'Windshield is optional. Tick one windshield below to add it, or leave both unticked for the mount only.';
+// Same group = only one can be chosen.
+const WS450 = { id: 'ws450', name: 'Original Himalayan 450 Touring Windshield', price: 3220, group: 'ws' };
+const WS450S = { id: 'ws450s', name: 'Stock Himalayan 450 Windshield (Short)', price: 850, group: 'ws' };
 
 const xpulseKit = (slug, bike, brand, page, n) => ({
   slug, bike, brand, page, n,
@@ -15,7 +17,7 @@ const re450 = (slug, bike, brand, page, n) => ({
   slug, bike, brand, page, n,
   title: `${bike} GPS Mount (RE 450 Touring type)`,
   compat: 'Compatible with RE Himalayan 450 Touring windshield',
-  price: 2500, mrp_breakdown: 'GPS Mount ₹2500', note: RE_NOTE, addons: [WS450]
+  price: 2500, mrp_breakdown: 'GPS Mount ₹2500', note: RE_NOTE, addons: [WS450, WS450S]
 });
 
 const list = [

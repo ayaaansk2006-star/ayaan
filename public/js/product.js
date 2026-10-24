@@ -23,7 +23,7 @@ function openProduct(p) {
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
     ${p.variants.length ? `<fieldset class="variant"><legend><b style="white-space:nowrap">Emission standard (BS) <span class="lime">*</span></b></legend><small>Tick one. Fitting is different for each, price is the same.</small>
       <div class="ticks">${p.variants.map(v => `<label class="tick"><input type="checkbox" name="bs" value="${esc(v)}"><span class="tbox"></span>${esc(v)}</label>`).join('')}</div></fieldset>` : ''}
-    ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
+    ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}" data-group="${esc(a.group || '')}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
     ${p.price ? `<div class="qty"><button id="qm" aria-label="Less">−</button><b id="qv">1</b><button id="qp" aria-label="More">+</button></div>
     <button class="btn" id="addcart">Add to Cart</button>
     <button class="btn ghost" id="buynow">Buy Now</button>` : `<a class="btn" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, what is the price of the ' + p.title + '?')}">Ask price on WhatsApp</a>`}
@@ -59,7 +59,11 @@ function openProduct(p) {
       addonNames: p.addons.filter(a => chosen().includes(a.id)).map(a => '+ ' + a.name).join(', ') });
     return true;
   };
-  document.querySelectorAll('.addon input').forEach(i => i.onchange = upd);
+  // Add-ons in the same group (e.g. windshields) behave like a single choice that can be cleared.
+  document.querySelectorAll('.addon input').forEach(i => i.onchange = () => {
+    if (i.checked && i.dataset.group) document.querySelectorAll(`.addon input[data-group="${i.dataset.group}"]`).forEach(x => { if (x !== i) x.checked = false; });
+    upd();
+  });
   document.querySelectorAll('.thumbs img').forEach(t => t.onclick = () => show(+t.dataset.i));
   if ($('#prev')) { $('#prev').onclick = () => show(at - 1); $('#next').onclick = () => show(at + 1); }
   if (!p.price) {
