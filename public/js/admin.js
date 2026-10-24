@@ -53,6 +53,8 @@ function render() {
       try { await api('/api/admin/reels', { method: 'POST', body: { url: e.target.url.value, caption: e.target.caption.value } }); toast('Reel added'); load(); }
       catch (err) { $('#rerr').textContent = err.message; } };
     document.querySelectorAll('[data-rdel]').forEach(b => b.onclick = async () => { if (confirm('Remove this reel from the website?')) { await api('/api/admin/reels/' + b.dataset.rdel, { method: 'DELETE' }); load(); } });
+  } else if (tab === 'google') {
+    renderGoogle();
   } else if (tab === 'reviews') {
     $('#view').innerHTML = reviews.length ? `<table><tr><th>Product</th><th>Review</th><th>Status</th><th></th></tr>${reviews.map(r => `<tr>
       <td>${esc((products.find(p => p.slug === r.slug) || {}).title || r.slug)}<br><small>${esc(r.order_id)}</small></td>

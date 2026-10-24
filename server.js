@@ -26,6 +26,7 @@ app.use('/api', require('./src/uploads'));
 app.use('/api', require('./src/shop'));
 app.use('/api', require('./src/reviews').pub);
 app.use('/api', require('./src/reels').pub);
+app.use('/api', require('./src/greviews').pub);
 app.use('/api/admin', require('./src/admin'));
 app.use('/uploads', express.static(require('./src/uploads').DIR, { maxAge: '30d' }));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { maxAge: '7d' }));

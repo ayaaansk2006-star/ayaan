@@ -182,3 +182,8 @@ fieldset.variant { margin: 0; } .variant legend { padding: 0 4px; }
 .tick input:checked + .tbox::after { content: ""; width: 5px; height: 10px; border: solid #000; border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-1px, -1px); }
 .tick:has(input:checked) { border-color: var(--lime); }
 .tick input:focus-visible + .tbox { outline: 2px solid var(--lime); outline-offset: 2px; }
+/* Google reviews */
+section.greviews { padding: 70px 0; }
+.g-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; }
+.g-logo { width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+#gSummary { margin-right: auto; display: flex; align-items: center; gap: 8px; }
