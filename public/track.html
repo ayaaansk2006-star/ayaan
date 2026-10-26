@@ -15,6 +15,12 @@
 .tl b { color: #fff; display: block; } .tl small { font-size: 13px; }
 .eta { display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 12px; background: rgba(254,245,2,.08); border: 1px solid rgba(254,245,2,.3); margin-top: 14px; }
 .ship { padding: 14px; border-radius: 12px; border: 1px solid var(--line); margin-top: 12px; }
+.after { display: grid; gap: 10px; margin-top: 12px; }
+.asb { width: 100%; border-color: #444; color: #ddd; }
+.req { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); }
+.req.pending { border-color: rgba(254,245,2,.5); } .req.approved { border-color: #2e7d32; } .req.rejected { border-color: var(--red); }
+.req small, .rnote { color: var(--muted); font-size: 13px; }
+.req-form { padding: 14px; border: 1px dashed #444; border-radius: 12px; }
 </style>
 <link rel="stylesheet" href="/css/polish.css?v=2">
 </head>
@@ -36,6 +42,7 @@
   <div id="result" class="panel" style="display:none;margin-top:20px"></div>
 </main>
 <script src="/js/common.js?v=8"></script>
-<script src="/js/track.js?v=1"></script>
+<script src="/js/aftersales.js?v=1"></script>
+<script src="/js/track.js?v=2"></script>
 </body>
 </html>

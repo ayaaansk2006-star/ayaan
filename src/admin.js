@@ -87,5 +87,6 @@ r.patch('/products/:slug', async (req, res) => {
 r.use('/reviews', require('./reviews').admin);
 r.use('/reels', require('./reels').admin);
 r.use('/google-reviews', require('./greviews').admin);
+r.use('/requests', require('./aftersales').admin);
 
 module.exports = r;

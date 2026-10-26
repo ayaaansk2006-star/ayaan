@@ -8,11 +8,19 @@
 .tabs button { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: none; color: #fff; font: inherit; cursor: pointer; }
 .tabs button.on { background: var(--lime); color: #000; font-weight: 700; border-color: var(--lime); }
 .ord { border-bottom: 1px solid var(--line); }
-.ord summary { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; cursor: pointer; list-style: none; }
+.ord summary { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 0; cursor: pointer; list-style: none; }
+.ord summary > .pbar, .ord summary > .ord-acts, .ord summary > .pcancel { width: 100%; margin: 0; }
+.ord .more { color: var(--muted); }
 .ord summary::-webkit-details-marker { display: none; }
-.ord summary::after { content: "▾"; color: var(--muted); transition: transform .25s; } .ord[open] summary::after { transform: rotate(180deg); }
+
 .ord-body { padding: 0 0 16px; display: grid; gap: 8px; animation: rise2 .3s ease-out; } .ord-body ul, .tl { padding-left: 18px; }
 .tl small, .ord-body small { color: var(--muted); }
+.pbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 0 0 12px; }
+.pbar span { font-size: 11px; color: var(--muted); padding-top: 8px; border-top: 4px solid #2a2a2a; }
+.pbar span.on { color: #fff; border-color: var(--lime); }
+.pcancel { color: var(--red); font-size: 13px; margin: 0 0 12px; }
+.ord-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.ord-acts .btn { padding: 8px 14px; font-size: 13px; }
 @keyframes rise2 { from { opacity: 0; transform: translateY(-6px); } }
 </style>
 <link rel="stylesheet" href="/css/polish.css?v=2">
@@ -46,6 +54,6 @@
   </div>
 </main>
 <script src="/js/common.js?v=8"></script>
-<script src="/js/account.js?v=2"></script>
+<script src="/js/account.js?v=3"></script>
 </body>
 </html>

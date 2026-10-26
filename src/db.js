@@ -42,6 +42,8 @@ async function setup() {
     id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, pass TEXT, name TEXT, phone TEXT,
     address TEXT, city TEXT, state TEXT, pincode TEXT, created_at TEXT)`,
     'CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, caption TEXT, created_at TEXT)',
+    `CREATE TABLE IF NOT EXISTS order_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id TEXT, type TEXT, reason TEXT,
+    details TEXT, status TEXT DEFAULT 'Pending', reply TEXT, created_at TEXT)`,
     'CREATE TABLE IF NOT EXISTS google_reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, rating INTEGER, text TEXT, posted TEXT)'
   ], 'write');
   const [oc, rc, pc] = await Promise.all([cols('orders'), cols('reviews'), cols('products')]);

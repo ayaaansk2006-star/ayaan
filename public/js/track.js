@@ -43,7 +43,9 @@ function render(o, email) {
     <div class="row" style="margin-top:12px"><b>Total paid</b><b class="lime display">${inr(o.total)}</b></div>
     <a class="btn ghost" style="margin-top:16px;width:100%" target="_blank" rel="noopener"
       href="https://wa.me/919833731869?text=${encodeURIComponent(`Hi Altitude Moto, my order ${o.id} (${inr(o.total)}). Status: ${o.status}`)}">Message us on WhatsApp about this order</a>
-    ${o.status === 'Delivered' ? `<a class="btn" style="margin-top:12px;width:100%" href="/review?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(email)}">Write a review with photos / videos</a>` : ''}`;
+    ${o.status === 'Delivered' ? `<a class="btn" style="margin-top:12px;width:100%" href="/review?id=${encodeURIComponent(o.id)}&email=${encodeURIComponent(email)}">Write a review with photos / videos</a>` : ''}
+    <div id="after" class="after"></div>`;
+  afterSales(o, email);
 }
 
 async function track(id, email) {

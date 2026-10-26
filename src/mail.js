@@ -50,5 +50,11 @@ module.exports = {
     send(o.email, `Order ${o.id} received — Altitude Moto`, orderHtml(o, 'Thanks for your order!')),
     process.env.ADMIN_EMAIL && send(process.env.ADMIN_EMAIL, `New order ${o.id} — ${inr(o.total)}`, orderHtml(o, 'New order placed'))
   ])),
+  requestOpened: (o, r) => bg(Promise.all([
+    send(o.email, `We received your ${r.type} request for order ${o.id}`, orderHtml(o, `Your ${r.type} request is received (${r.reason}). We will reply within 1 working day.`)),
+    process.env.ADMIN_EMAIL && send(process.env.ADMIN_EMAIL, `${r.type.toUpperCase()} request: order ${o.id}`, orderHtml(o, `Customer asked to ${r.type}: ${r.reason}${r.details ? ' — ' + r.details : ''}`))
+  ])),
+  requestDecided: (o, r) => bg(send(o.email, `Your ${r.type} request for order ${o.id} was ${r.status.toLowerCase()}`,
+    orderHtml(o, `Your ${r.type} request was ${r.status.toLowerCase()}${r.reply ? ': ' + r.reply : ''}`))),
   statusChanged: o => bg(send(o.email, `Order ${o.id}: ${o.status} — Altitude Moto`, orderHtml(o, `Your order is now: ${o.status}`)))
 };
