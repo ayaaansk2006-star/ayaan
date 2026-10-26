@@ -149,3 +149,25 @@ section.greviews { padding: 70px 0; }
 .fbt-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
 .fbt-row img { width: 52px; height: 52px; object-fit: cover; border-radius: 8px; }
 .fbt-row .btn { padding: 8px 12px; font-size: 13px; }
+
+/* Product popup: Add to Cart stays on screen while scrolling the details */
+#addcart { position: sticky; bottom: 12px; z-index: 3; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+#mainimg { cursor: zoom-in; }
+.zoom { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.95); overflow: auto; display: grid; place-items: center; animation: rise .2s ease-out; }
+.zoom img { max-width: 100vw; max-height: 100vh; object-fit: contain; cursor: zoom-in; }
+.zoom.z { place-items: start; } .zoom.z img { max-width: none; max-height: none; width: 250vw; cursor: zoom-out; }
+.zoom .close { position: fixed; top: 14px; right: 14px; background: rgba(0,0,0,.6); }
+/* Shop: chosen bike pinned under the header */
+.fitbar { display: none; position: sticky; top: 76px; z-index: 20; margin-bottom: 12px; padding: 10px 14px; border-radius: 12px; font-size: 14px;
+  background: rgba(17,17,17,.92); backdrop-filter: blur(10px); border: 1px solid rgba(254,245,2,.35); align-items: center; gap: 8px; }
+.fitbar.show { display: flex; }
+.fitbar button { margin-left: auto; background: none; border: 1px solid #444; color: #fff; border-radius: 999px; padding: 4px 12px; font: inherit; cursor: pointer; }
+/* Hero: one clear action on phones */
+.cta-wa { display: none; }
+@media (max-width: 600px) {
+  .hero2 .cta .btn.ghost { display: none; }
+  .hero2 .cta .btn { width: 100%; }
+  .cta-wa { display: block; width: 100%; text-align: center; color: var(--muted); font-size: 14px; text-decoration: underline; }
+}
+.pdesc { color: #cfcfcf; font-size: 15px; line-height: 1.6; }
+.fitbar { white-space: nowrap; } .fitbar b { overflow: hidden; text-overflow: ellipsis; min-width: 0; }

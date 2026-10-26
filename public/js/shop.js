@@ -33,6 +33,10 @@ function quickAdd(p) {
 
 function renderGrid() {
   const l = list();
+  // Chosen bike stays pinned while scrolling so shoppers only see parts that fit.
+  $('#fitbar').innerHTML = model && !query.trim() ? `Showing parts for <b class="lime">${esc(model)}</b> <button id="fitchg">Change</button>` : '';
+  $('#fitbar').classList.toggle('show', !!model && !query.trim());
+  if ($('#fitchg')) $('#fitchg').onclick = () => { model = ''; renderModels(); renderGrid(); $('#models').scrollIntoView({ block: 'center' }); };
   $('#count').textContent = `${l.length} part${l.length === 1 ? '' : 's'}${model && !query.trim() ? ' for ' + model : ''}`;
   $('#grid').innerHTML = l.map(p => `<div class="card reveal" data-slug="${esc(p.slug)}">
     <div class="ph">${p.title.includes('Kit') ? '<span class="badge">KIT</span>' : ''}${p.variants.length ? `<span class="badge">${esc(p.variants.join(' / '))}</span>` : ''}

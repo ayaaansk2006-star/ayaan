@@ -11,13 +11,15 @@ const xpulseKit = (slug, bike, brand, page, n) => ({
   slug, bike, brand, page, n,
   title: `${bike} GPS Mount + Xpulse 210 Windshield Kit`,
   compat: 'Compatible with Hero Xpulse 210 windshield',
-  price: 3850, mrp_breakdown: 'GPS Mount ₹3300 + Windshield ₹550', note: XP_NOTE, addons: []
+  price: 3850, mrp_breakdown: 'GPS Mount ₹3300 + Windshield ₹550', note: XP_NOTE, addons: [],
+  desc: `GPS mount for the ${bike}, made to hold the Hero Xpulse 210 windshield. Sold as a kit with the windshield, because fitting it needs minor modifications to the mount. Prefer the Royal Enfield Himalayan 450 Touring windshield? We also make an RE 450 Touring type mount for this bike.`
 });
 const re450 = (slug, bike, brand, page, n) => ({
   slug, bike, brand, page, n,
   title: `${bike} GPS Mount (RE 450 Touring type)`,
   compat: 'Compatible with RE Himalayan 450 Touring windshield',
-  price: 2500, mrp_breakdown: 'GPS Mount ₹2500', note: RE_NOTE, addons: [WS450, WS450S]
+  price: 2500, mrp_breakdown: 'GPS Mount ₹2500', note: RE_NOTE, addons: [WS450, WS450S],
+  desc: `GPS mount for the ${bike}, made to take the Royal Enfield Himalayan 450 Touring type windshield. Buy the mount alone, or add the Original Himalayan 450 Touring Windshield or the Stock Himalayan 450 Short windshield with it.`
 });
 
 const list = [
@@ -33,13 +35,16 @@ const list = [
     images: [0, 1, 2, 3, 4, 5, 6, 7].map(i => `/img/guerrilla450_${i}.jpeg`) },
   { slug: 're-meteor-350', bike: 'RE Meteor 350', brand: 'Royal Enfield', page: 9, n: 6,
     title: 'RE Meteor 350 GPS Mount', compat: 'Compatible with RE Meteor 350 windshield only',
-    price: 1800, mrp_breakdown: 'GPS Mount ₹1800', note: '', addons: [] },
+    price: 1800, mrp_breakdown: 'GPS Mount ₹1800', note: '', addons: [],
+    desc: 'GPS mount for the Royal Enfield Meteor 350. Works with the RE Meteor 350 windshield only.' },
   { slug: 'hero-xpulse-200', bike: 'Hero Xpulse 200 / 4V / Rally Pro', brand: 'Hero', page: 10, n: 5,
     title: 'Hero Xpulse 200 / 4V / Rally Pro GPS Mount', compat: 'Compatible with Hero Xpulse 200 windshield',
-    price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '', addons: [] },
+    price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '', addons: [],
+    desc: 'GPS mount for the Hero Xpulse 200, Xpulse 200 4V and Xpulse 200 4V Rally Pro. Works with the Hero Xpulse 200 windshield.' },
   { slug: 'hero-xpulse-210', bike: 'Hero Xpulse 210', brand: 'Hero', page: 11, n: 8,
     title: 'Hero Xpulse 210 GPS Mount', compat: 'Compatible with Hero Xpulse 210 windshield',
     price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '',
+    desc: 'GPS mount for the Hero Xpulse 210. Works with the Hero Xpulse 210 windshield. Need the windshield too? Tick it below to add it with the mount.',
     // ₹550 = Xpulse 210 windshield price from the kit breakdown (GPS Mount ₹3300 + Windshield ₹550).
     addons: [{ id: 'ws', name: 'Hero Xpulse 210 Windshield', price: 550 }] },
   { slug: 're-himalayan-411', bike: 'RE Himalayan 411 (BS3/BS4/BS6)', brand: 'Royal Enfield', page: 12, n: 5,
@@ -48,24 +53,29 @@ const list = [
     // Windshield prices as listed for the Classic mounts (same RE Himalayan 411 windshields).
     addons: [{ id: 'ws4', name: 'RE Himalayan 411 BS4 Windshield', price: 580, group: 'ws' },
       { id: 'ws6', name: 'RE Himalayan BS6 Windshield', price: 680, group: 'ws' }],
-    variants: ['BS3', 'BS4', 'BS6'] }, // fitting differs per BS version; same price
+    variants: ['BS3', 'BS4', 'BS6'],
+    desc: 'GPS mount for the Royal Enfield Himalayan 411. The fitting is different for BS3, BS4 and BS6 bikes, so tick your bike\'s version when you order. Works with the Himalayan 411 BS4/BS6 (up to 2021) windshield; add the BS4 or BS6 windshield below if you need one.' }, // fitting differs per BS version; same price
   { slug: 're-classic-reborn', bike: 'RE Classic 350 Reborn', brand: 'Royal Enfield', page: 13, idx: [0, 4, 1],
     title: 'RE Classic 350 (Reborn) GPS Mount', compat: 'Compatible with RE Himalayan BS6 windshield',
     price: 2200, mrp_breakdown: 'GPS Mount ₹2200', note: '',
-    addons: [{ id: 'ws', name: 'RE Himalayan BS6 Windshield', price: 680 }] },
+    addons: [{ id: 'ws', name: 'RE Himalayan BS6 Windshield', price: 680 }],
+    desc: 'GPS mount for the new (Reborn) Royal Enfield Classic 350. Works with the RE Himalayan BS6 windshield; tick it below to add it with the mount.' },
   { slug: 're-classic-uce', bike: 'RE Classic 350 / Bullet (UCE)', brand: 'Royal Enfield', page: 13, idx: [2, 3, 5],
     title: 'RE Classic 350 / Bullet (UCE) GPS Mount', compat: 'Compatible with RE Himalayan 411 BS4 windshield',
     price: 2200, mrp_breakdown: 'GPS Mount ₹2200', note: '',
-    addons: [{ id: 'ws', name: 'RE Himalayan 411 BS4 Windshield', price: 580 }] },
+    addons: [{ id: 'ws', name: 'RE Himalayan 411 BS4 Windshield', price: 580 }],
+    desc: 'GPS mount for the older Royal Enfield Classic 350 and Bullet with the UCE engine. Works with the RE Himalayan 411 BS4 windshield; tick it below to add it with the mount.' },
   // A price of 0 would show "Price on request" with a WhatsApp button instead of Add to Cart.
   { slug: 'himalayan-450-touring-windshield', bike: 'Himalayan 450 Touring Windshield', brand: 'Royal Enfield',
     title: 'Original Royal Enfield Himalayan 450 Touring Windshield', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350, RE Guerrilla 450',
     price: 3220, mrp_breakdown: 'Windshield ₹3220', note: '', addons: [], kind: 'windshield',
-    images: ['/img/hw450_0.jpeg'] },
+    images: ['/img/hw450_0.jpeg'],
+    desc: 'Original Royal Enfield Himalayan 450 Touring windshield, the taller of the two Himalayan 450 windshields we sell. Fits on our RE 450 Touring type GPS mounts for the Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350 and RE Guerrilla 450.' },
   { slug: 'himalayan-450-stock-short-windshield', bike: 'Himalayan 450 Stock Windshield (Short)', brand: 'Royal Enfield',
     title: 'Stock Royal Enfield Himalayan 450 Windshield (Short)', compat: 'Our RE 450 Touring type GPS mounts: Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350, RE Guerrilla 450',
     price: 850, mrp_breakdown: 'Windshield ₹850', note: '', addons: [], kind: 'windshield',
-    images: ['/img/hw450_1.jpeg'] }
+    images: ['/img/hw450_1.jpeg'],
+    desc: 'The stock (short) windshield of the Royal Enfield Himalayan 450. Fits on our RE 450 Touring type GPS mounts for the Triumph Scrambler 400X/XC, Speed 400, Speed T4, RE Scram 440 / 411, RE Hunter 350 and RE Guerrilla 450.' }
 ];
 
 module.exports = list.map(({ page, n, idx, ...p }) => ({ ...p, images: p.images || imgs(page, idx || range(n)) }));

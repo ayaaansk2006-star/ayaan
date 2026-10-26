@@ -19,13 +19,14 @@ function openProduct(p) {
       <dt>Help</dt><dd>WhatsApp <a class="lime" href="https://wa.me/919833731869" target="_blank" rel="noopener">+91 98337 31869</a> to confirm fitment before you buy</dd>
     </dl></div></div>
   <div class="detail"><span class="tag">${esc(p.bike)}</span><h2>${esc(p.title)}</h2>
+    ${p.desc ? `<p class="pdesc">${esc(p.desc)} All bushes, nuts and bolts are included.</p>` : ''}
     <div class="display lime" style="font-size:32px" id="mprice">${p.price ? inr(p.price) : 'Price on request'}</div>
     ${p.note ? `<div class="note">${esc(p.note)}</div>` : ''}
     ${p.variants.length ? `<fieldset class="variant"><legend><b style="white-space:nowrap">Emission standard (BS) <span class="lime">*</span></b></legend><small>Tick one. Fitting is different for each, price is the same.</small>
       <div class="ticks">${p.variants.map(v => `<label class="tick"><input type="checkbox" name="bs" value="${esc(v)}"><span class="tbox"></span>${esc(v)}</label>`).join('')}</div></fieldset>` : ''}
     ${p.addons.map(a => `<label class="addon"><input type="checkbox" value="${esc(a.id)}" data-group="${esc(a.group || '')}"> Add ${esc(a.name)} <b class="lime" style="margin-left:auto">+${inr(a.price)}</b></label>`).join('')}
     ${p.price ? `<div class="qty"><button id="qm" aria-label="Less">−</button><b id="qv">1</b><button id="qp" aria-label="More">+</button></div>
-    <button class="btn" id="addcart">Add to Cart</button>
+    <button class="btn" id="addcart">Add to Cart · <span id="addtot">${inr(p.price)}</span></button>
     <button class="btn ghost" id="buynow">Buy Now</button>` : `<a class="btn" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, what is the price of the ' + p.title + '?')}">Ask price on WhatsApp</a>`}
     ${p.price ? `<a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, I am interested in ' + p.title)}">Ask on WhatsApp</a>` : ''}
     <a class="fitchk" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, will the ' + p.title + ' fit my bike? Sending a photo of my bike and its model/year.')}">Not sure it fits? <b class="lime">WhatsApp us a photo of your bike →</b></a>
@@ -41,7 +42,7 @@ function openProduct(p) {
   }).catch(() => {});
   const chosen = () => [...document.querySelectorAll('.addon input:checked')].map(i => i.value);
   const unit = () => p.price + p.addons.filter(a => chosen().includes(a.id)).reduce((s, a) => s + a.price, 0);
-  const upd = () => { $('#qv').textContent = qty; $('#mprice').textContent = inr(unit() * qty); };
+  const upd = () => { $('#qv').textContent = qty; $('#mprice').textContent = $('#addtot').textContent = inr(unit() * qty); };
   const show = i => {
     at = (i + p.images.length) % p.images.length;
     $('#mainimg').src = p.images[at]; $('#blurimg').style.backgroundImage = `url('${p.images[at]}')`;
@@ -66,6 +67,7 @@ function openProduct(p) {
     upd();
   });
   document.querySelectorAll('.thumbs img').forEach(t => t.onclick = () => show(+t.dataset.i));
+  $('#mainimg').onclick = () => zoom(p.images[at]);
   if ($('#prev')) { $('#prev').onclick = () => show(at - 1); $('#next').onclick = () => show(at + 1); }
   if (!p.price) {
     $('#mclose').onclick = closeModal; $('#modal').classList.add('open');
@@ -79,6 +81,15 @@ function openProduct(p) {
   $('#mclose').onclick = closeModal;
   $('#modal').classList.add('open');
   $('#modal').onkey = e => { if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); };
+}
+
+// Full-screen photo: tap to zoom 2.5x, drag/scroll to pan, pinch works natively on phones.
+function zoom(src) {
+  const z = document.createElement('div');
+  z.className = 'zoom'; z.innerHTML = `<button class="close" aria-label="Close">×</button><img src="${esc(src)}" alt="">`;
+  z.querySelector('img').onclick = e => { e.stopPropagation(); z.classList.toggle('z'); };
+  z.onclick = () => z.remove();
+  document.body.appendChild(z);
 }
 
 function lightbox(src) {

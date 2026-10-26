@@ -78,7 +78,7 @@ const init = () => (ready ||= setup().catch(e => { ready = null; throw e; }));
 // Variants (e.g. BS3/BS4/BS6) come straight from the catalog; they change fitting, not price.
 const meta = slug => catalog.find(c => c.slug === slug) || {};
 const parseProduct = p => p && { ...p, addons: JSON.parse(p.addons), images: JSON.parse(p.images), active: !!p.active,
-  variants: meta(p.slug).variants || [], kind: meta(p.slug).kind || 'mount' };
+  variants: meta(p.slug).variants || [], kind: meta(p.slug).kind || 'mount', desc: meta(p.slug).desc || '' };
 const parseOrder = o => o && { ...o, items: JSON.parse(o.items), history: JSON.parse(o.history || '[]') };
 // Append to the status timeline; runs after a status UPDATE so it records the new status.
 const logStatus = id => run(`UPDATE orders SET history=json_insert(COALESCE(history,'[]'),'$[#]',json_object('status',status,'at',datetime('now'))) WHERE id=?`, [id]);
