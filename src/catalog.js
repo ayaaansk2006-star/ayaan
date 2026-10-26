@@ -43,7 +43,7 @@ const list = [
     desc: 'GPS mount for the Hero Xpulse 200, Xpulse 200 4V and Xpulse 200 4V Rally Pro. Works with the Hero Xpulse 200 windshield.' },
   { slug: 'hero-xpulse-210', bike: 'Hero Xpulse 210', brand: 'Hero', page: 11, n: 8,
     title: 'Hero Xpulse 210 GPS Mount', compat: 'Compatible with Hero Xpulse 210 windshield',
-    price: 1, mrp_breakdown: 'GPS Mount (test price)', note: '',
+    price: 1700, mrp_breakdown: 'GPS Mount ₹1700', note: '',
     desc: 'GPS mount for the Hero Xpulse 210. Works with the Hero Xpulse 210 windshield. Need the windshield too? Tick it below to add it with the mount.',
     // ₹550 = Xpulse 210 windshield price from the kit breakdown (GPS Mount ₹3300 + Windshield ₹550).
     addons: [{ id: 'ws', name: 'Hero Xpulse 210 Windshield', price: 550 }] },
