@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta property="og:title" content="Altitude Moto"><meta property="og:image" content="/logo.png?v=2">
 <link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/css/style.css?v=7"><link rel="stylesheet" href="/css/home.css?v=18">
-<link rel="stylesheet" href="/css/polish.css?v=5">
+<link rel="stylesheet" href="/css/polish.css?v=6">
 </head>
 <body>
 <div class="progress" id="progress"></div>
@@ -166,9 +166,11 @@
 <aside class="drawer" id="drawer">
   <header><h3 class="display">Your Cart <small class="cart-n" id="cart-n"></small></h3><button class="close" style="position:static" data-close-cart aria-label="Close cart">×</button></header>
   <div class="items" id="cart-items"></div>
-  <footer id="cart-foot"><div class="row"><span>Subtotal</span><b class="lime display" id="cart-total">₹0</b></div>
-    <p class="cart-note">Courier charge is added at checkout from your pincode.</p>
+  <footer id="cart-foot"><div class="row"><span>Subtotal</span><b id="cart-total">₹0</b></div>
+    <div class="row cship"><label for="cpin">Courier to</label><input id="cpin" inputmode="numeric" maxlength="6" placeholder="Pincode" autocomplete="postal-code"><span id="cship"></span></div>
+    <div class="row cgrand"><span>Total</span><b class="lime display" id="cgrand">—</b></div>
     <a href="/checkout" class="btn" id="checkout-btn" style="width:100%">Checkout →</a>
+    <button class="ccont" data-close-cart>← Continue shopping</button>
     <p class="cart-trust">Secure payment via Razorpay · All bushes, nuts &amp; bolts included</p></footer>
 </aside>
 <div class="scrim" id="scrim" data-close-cart></div>
@@ -176,6 +178,7 @@
 <script src="/js/common.js?v=8"></script>
 <script src="/js/product.js?v=18"></script>
 <script src="/js/shop.js?v=10"></script>
+<script src="/js/cartplus.js?v=1"></script>
 <script src="/js/suggest.js?v=1"></script>
 <script src="/js/ui.js?v=2"></script>
 <script src="/js/greviews.js?v=2"></script>

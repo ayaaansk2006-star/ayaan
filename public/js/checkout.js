@@ -21,6 +21,7 @@ async function quote() {
     showPm();
   } catch (e) { $('#err').textContent = e.message; }
 }
+if (!form.pincode.value) form.pincode.value = localStorage.getItem('am_pin') || ''; // remembered from the cart
 form.pincode.oninput = () => { const n = form.pincode.value.trim().length; if (n === 6 || shipped) quote(); };
 quote();
 

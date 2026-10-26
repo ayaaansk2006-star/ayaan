@@ -171,3 +171,22 @@ section.greviews { padding: 70px 0; }
 }
 .pdesc { color: #cfcfcf; font-size: 15px; line-height: 1.6; }
 .fitbar { white-space: nowrap; } .fitbar b { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* Cart: premium feel */
+body.cart-open { overflow: hidden; }
+.drawer { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.scrim { transition: opacity .3s; }
+.cline.new { animation: cnew 1.6s ease-out; }
+@keyframes cnew { 0% { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(254,245,2,.35); transform: translateX(14px); } 30% { transform: none; } 100% { border-color: var(--line); box-shadow: none; } }
+.cart-btn.bump { animation: cbump .45s ease-out; }
+@keyframes cbump { 40% { transform: scale(1.15); } }
+.cship { gap: 10px; margin-top: 10px; font-size: 14px; } .cship label { color: var(--muted); white-space: nowrap; }
+.cship input { width: 96px; background: #0c0c0c; border: 1px solid #2a2a2a; color: #fff; border-radius: 8px; padding: 7px 10px; font: inherit; }
+.cship input:focus { outline: none; border-color: var(--lime); }
+#cship { margin-left: auto; text-align: right; } #cship small { color: var(--muted); }
+.cgrand { margin: 10px 0 14px; padding-top: 10px; border-top: 1px solid var(--line); } .cgrand b { font-size: 22px; }
+.ccont { width: 100%; margin-top: 8px; background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer; padding: 8px; }
+.ccont:hover { color: #fff; }
+.undo { display: flex; align-items: center; gap: 14px; background: #1b1b1b; color: #fff; border: 1px solid #333; }
+.undo button { background: none; border: 0; color: var(--lime); font-weight: 800; cursor: pointer; font: inherit; font-weight: 800; }
+.undo { white-space: nowrap; width: max-content; }
