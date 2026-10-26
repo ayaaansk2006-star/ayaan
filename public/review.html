@@ -13,8 +13,11 @@
 .pick { display: flex; gap: 6px; } .pick button { background: none; border: 0; color: #555; cursor: pointer; padding: 2px; }
 .pick button.on { color: var(--lime); }
 .prev { display: flex; gap: 8px; flex-wrap: wrap; } .prev img, .prev video { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; }
+.rev { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 8px; }
+.rev p { color: #ddd; } .rev small { color: var(--muted); }
+.rev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
 </style>
-<link rel="stylesheet" href="/css/polish.css?v=1">
+<link rel="stylesheet" href="/css/polish.css?v=2">
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -25,6 +28,13 @@
   <h1 class="display">Customer <span class="lime">reviews</span></h1>
   <p class="muted">Real photos and videos from riders who bought from us. Only customers with a delivered order can post.</p>
   <div class="rv-grid" id="list"></div>
+
+  <section class="greviews" id="google-reviews" style="padding:50px 0 0">
+    <h2 class="display">Rated on <span class="lime">Google</span></h2>
+    <div class="g-head"><div id="gSummary"></div>
+      <a class="btn ghost" href="https://maps.app.goo.gl/THTbsyPpb2SsMGMR8" target="_blank" rel="noopener">Read all on Google</a></div>
+    <div class="rev-grid" id="gGrid"></div>
+  </section>
 
   <section class="panel" style="max-width:720px;margin:40px auto 0" id="write">
     <h2 class="display">Write a review</h2>
@@ -37,5 +47,6 @@
 </main>
 <script src="/js/common.js?v=8"></script>
 <script src="/js/review.js?v=1"></script>
+<script src="/js/greviews.js?v=2"></script>
 </body>
 </html>

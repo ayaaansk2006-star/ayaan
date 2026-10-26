@@ -183,15 +183,3 @@ fieldset.variant { margin: 0; } .variant legend { padding: 0 4px; }
 .tick:has(input:checked) { border-color: var(--lime); }
 .tick input:focus-visible + .tbox { outline: 2px solid var(--lime); outline-offset: 2px; }
 /* Google reviews */
-section.greviews { padding: 70px 0; }
-.g-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; }
-.g-logo { width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
-#gSummary { margin-right: auto; display: flex; align-items: center; gap: 8px; }
-
-/* Google reviews: slow marquee, pauses on hover/touch; static scrollable row for reduced motion */
-.g-track { overflow: hidden; margin-top: 24px; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.g-move { display: flex; gap: 18px; width: max-content; animation: gslide calc(var(--n) * 9s) linear infinite; }
-.g-move .rev { width: min(340px, 80vw); flex: none; }
-.g-track:hover .g-move, .g-track:active .g-move { animation-play-state: paused; }
-@keyframes gslide { to { transform: translateX(calc(-50% - 9px)); } }
-@media (prefers-reduced-motion: reduce) { .g-track { overflow-x: auto; mask-image: none; } .g-move .rev[aria-hidden] { display: none; } }

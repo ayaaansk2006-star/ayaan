@@ -24,6 +24,7 @@ document.querySelectorAll('[data-count]').forEach(el => {
 function syncBar() {
   const c = Cart.get();
   $('#mbar').classList.toggle('show', c.length > 0);
+  $('#mword').textContent = c.reduce((s, i) => s + i.qty, 0) === 1 ? 'item' : 'items';
   $('#mtotal').textContent = inr(c.reduce((s, i) => s + i.unit * i.qty, 0));
 }
 const _render = Cart.render;

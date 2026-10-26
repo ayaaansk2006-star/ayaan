@@ -105,3 +105,39 @@ footer.site { background: linear-gradient(180deg, transparent, rgba(254,245,2,.0
   .brand img { width: 34px; height: 34px; }
   .float-wa { width: 48px; height: 48px; bottom: 84px; left: 14px; }
 }
+
+/* Google reviews (homepage + reviews page) */
+section.greviews { padding: 70px 0; }
+.g-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; }
+.g-logo { width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+#gSummary { margin-right: auto; display: flex; align-items: center; gap: 8px; }
+
+/* Google reviews: slow marquee, pauses on hover/touch; static scrollable row for reduced motion */
+.g-track { overflow: hidden; margin-top: 24px; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.g-move { display: flex; gap: 18px; width: max-content; animation: gslide calc(var(--n) * 9s) linear infinite; }
+.g-move .rev { width: min(340px, 80vw); flex: none; }
+.g-track:hover .g-move, .g-track:active .g-move { animation-play-state: paused; }
+@keyframes gslide { to { transform: translateX(calc(-50% - 9px)); } }
+@media (prefers-reduced-motion: reduce) { .g-track { overflow-x: auto; mask-image: none; } .g-move .rev[aria-hidden] { display: none; } }
+
+/* Phones: inner-page header puts the menu on its own row so it never covers the logo */
+@media (max-width: 820px) {
+  header.top .wrap:has(> nav.links:not(#nav)) { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 8px; row-gap: 4px; }
+  header.top nav.links:not(#nav) { width: 100%; gap: 20px; font-size: 14px; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+  /* Toast sits under the header, not over the mobile cart bar */
+  .toast { bottom: auto; top: 84px; }
+  @keyframes rise { from { opacity: 0; transform: translate(-50%, -10px); } }
+  /* WhatsApp on the right, above back-to-top, clear of the hero text */
+  .float-wa { left: auto; right: 14px; bottom: 84px; width: 50px; height: 50px; }
+  .to-top { display: none; }
+}
+/* Phones: two products per row to halve scrolling */
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card .body { padding: 10px; gap: 4px; }
+  .card h3 { font-size: 13px; line-height: 1.3; }
+  .card .body > small, .card .body .row small, .card .tag { display: none; }
+  .card .price { font-size: 17px; }
+  .card .quick { width: 34px; height: 34px; font-size: 18px; right: 8px; bottom: 8px; }
+  .badge { top: 8px; left: 8px; font-size: 10px; }
+}
