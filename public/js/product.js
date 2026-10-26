@@ -28,6 +28,7 @@ function openProduct(p) {
     <button class="btn" id="addcart">Add to Cart</button>
     <button class="btn ghost" id="buynow">Buy Now</button>` : `<a class="btn" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, what is the price of the ' + p.title + '?')}">Ask price on WhatsApp</a>`}
     ${p.price ? `<a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, I am interested in ' + p.title)}">Ask on WhatsApp</a>` : ''}
+    <a class="fitchk" target="_blank" rel="noopener" href="https://wa.me/919833731869?text=${encodeURIComponent('Hi, will the ' + p.title + ' fit my bike? Sending a photo of my bike and its model/year.')}">Not sure it fits? <b class="lime">WhatsApp us a photo of your bike →</b></a>
     ${p.video ? '<h4 style="margin-top:6px">Watch it fitted</h4>' + videoEmbed(p.video) : ''}
     <div id="pReviews"></div>
   </div>`;
