@@ -49,7 +49,7 @@ function renderGrid() {
     || '<p style="color:var(--muted)">No parts found. WhatsApp us — we may still fit your bike!</p>';
   document.querySelectorAll('.card').forEach(c => c.onclick = e => {
     const p = products.find(x => x.slug === c.dataset.slug);
-    e.target.dataset.q ? quickAdd(p) : openProduct(p);
+    e.target.dataset.q ? quickAdd(p) : location.href = '/product?s=' + encodeURIComponent(p.slug);
   });
   observeReveal();
 }

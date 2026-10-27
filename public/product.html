@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Altitude Moto</title><meta name="description" content="">
+<meta name="theme-color" content="#0a0a0a"><link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="stylesheet" href="/css/style.css?v=7"><link rel="stylesheet" href="/css/home.css?v=18">
+<link rel="stylesheet" href="/css/polish.css?v=6">
+<link rel="stylesheet" href="/css/productpage.css?v=2">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="top"><div class="wrap">
+  <a href="/" class="brand"><img src="/logo.png?v=2" alt="Altitude Moto logo">ALTITUDE MOTO</a>
+  <nav class="links" id="nav">
+    <a href="/#shop">Shop</a><a href="/review">Reviews</a><a href="/track">Track Order</a><a href="/#videos" class="hide-lg">Videos</a><a href="/#faq" class="hide-lg">FAQ</a><a href="/#visit">Visit</a><a href="/account">Account</a>
+  </nav>
+  <div class="actions">
+    <button class="cart-btn" data-open-cart aria-label="Open cart"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6 5 3H2"/></svg><b class="cart-count">0</b></button>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</div></header>
+
+<main class="wrap pp">
+  <nav class="crumbs" id="crumbs"><a href="/">Home</a></nav>
+  <div class="modal open pagemode" id="modal"><div class="box" id="modal-box"><p style="padding:40px;color:var(--muted)">Loading…</p></div></div>
+  <div id="extra"></div>
+</main>
+
+<footer class="site" id="contact"><div class="wrap">
+  <div class="cols">
+    <div><a href="/" class="brand"><img src="/logo.png?v=2" alt="">ALTITUDE MOTO</a>
+      <p style="margin-top:12px;max-width:360px">Adventure motorcycle accessories, built and fitted by riders.</p></div>
+    <div><h4>Contact</h4>
+      <a href="tel:+919833731869">+91 98337 31869</a><br><a href="tel:+917977719218">+91 79777 19218</a><br>
+      <a href="mailto:altitudemotoindia@gmail.com">altitudemotoindia@gmail.com</a><br><small>RM Bhoir Wadi, Gate 2, WEH Service Rd, Dahisar East, Mumbai 400068</small></div>
+    <div><h4>Explore</h4>
+      <a href="/#shop">Shop</a><br><a href="/track">Track your order</a><br>
+      <a href="https://instagram.com/altitudemoto" target="_blank" rel="noopener">Instagram</a><br>
+      <a href="https://maps.app.goo.gl/THTbsyPpb2SsMGMR8" target="_blank" rel="noopener">Google Maps</a></div>
+  </div>
+  <p style="margin-top:24px;font-size:13px"><a href="/terms">Terms</a> · <a href="/privacy-policy">Privacy</a> · <a href="/refund-policy">Refund &amp; Cancellation</a> · <a href="/shipping-policy">Shipping</a> · <a href="/contact">Contact Us</a></p>
+  <p style="margin-top:30px;font-size:13px">© <span id="yr"></span> Altitude Moto. All prices are MRP in INR.</p>
+</div></footer>
+
+<a class="float-wa" href="https://wa.me/919833731869" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg></a>
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<aside class="drawer" id="drawer">
+  <header><h3 class="display">Your Cart <small class="cart-n" id="cart-n"></small></h3><button class="close" style="position:static" data-close-cart aria-label="Close cart">×</button></header>
+  <div class="items" id="cart-items"></div>
+  <footer id="cart-foot"><div class="row"><span>Subtotal</span><b id="cart-total">₹0</b></div>
+    <div class="row cship"><label for="cpin">Courier to</label><input id="cpin" inputmode="numeric" maxlength="6" placeholder="Pincode" autocomplete="postal-code"><span id="cship"></span></div>
+    <div class="row cgrand"><span>Total</span><b class="lime display" id="cgrand">—</b></div>
+    <a href="/checkout" class="btn" id="checkout-btn" style="width:100%">Checkout →</a>
+    <button class="ccont" data-close-cart>← Continue shopping</button>
+    <p class="cart-trust">Secure payment via Razorpay · All bushes, nuts &amp; bolts included</p></footer>
+</aside>
+<div class="scrim" id="scrim" data-close-cart></div>
+
+<script src="/js/common.js?v=8"></script>
+<script src="/js/product.js?v=18"></script>
+<script src="/js/productpage.js?v=1"></script>
+<script src="/js/cartplus.js?v=1"></script>
+<script src="/js/suggest.js?v=1"></script>
+</body>
+</html>

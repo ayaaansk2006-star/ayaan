@@ -1,0 +1,36 @@
+/* Product page: the popup layout shown inline as a full page */
+.pp { padding-top: 22px; padding-bottom: 40px; }
+.modal.pagemode { position: static; display: block; background: none; backdrop-filter: none; padding: 0; z-index: auto; }
+.pagemode .box { max-height: none; overflow: visible; max-width: none; animation: none !important; }
+.pagemode #mclose { display: none; }
+.crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.crumbs a:hover { color: var(--lime); } .crumbs b { color: #ddd; font-weight: 600; }
+.pp-sec { margin-top: 56px; }
+.why-g { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-top: 22px; }
+.why-c { display: grid; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, #161616, #111); transition: border-color .25s, transform .25s; }
+.why-c:hover { border-color: rgba(254,245,2,.5); transform: translateY(-3px); }
+.why-c small { color: var(--muted); font-size: 14px; }
+.why-i { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(254,245,2,.1); color: var(--lime); margin-bottom: 6px; }
+.cmp { margin-top: 22px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.cmp-h, .cmp-r { display: grid; grid-template-columns: 1fr 1.3fr 1.1fr; gap: 14px; padding: 14px 18px; align-items: center; }
+.cmp-h { background: #111; font-size: 14px; } .cmp-r { border-top: 1px solid var(--line); font-size: 14px; }
+.cmp-r > span { color: var(--muted); } .cmp-r b { font-weight: 600; } .cmp-r small { color: #888; font-size: 14px; }
+.cmp i { font-style: normal; font-weight: 800; margin-right: 8px; } .cmp .ok { color: var(--lime); } .cmp .no { color: #ff6b6b; }
+.pp-cta { text-align: center; padding: 36px 20px; border: 1px solid rgba(254,245,2,.35); border-radius: 20px; background: radial-gradient(600px 200px at 50% 0, rgba(254,245,2,.08), transparent); }
+.pp-cta p { color: var(--muted); margin: 8px 0 18px; }
+.pp .grid .card { text-decoration: none; }
+@media (max-width: 700px) {
+  .cmp-h { display: none; }
+  .cmp-r { grid-template-columns: 1fr; gap: 4px; }
+  .cmp-r > span { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+}
+.why-g { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+/* Phones: photos → price & Add to Cart → specs */
+@media (max-width: 900px) {
+  .pagemode .box { display: flex; flex-direction: column; }
+  .pagemode .gallery { display: contents; }
+  .pagemode .gallery .main { order: 1; margin: 12px 12px 0; }
+  .pagemode .thumbs { order: 2; padding: 10px 12px 0; }
+  .pagemode .detail { order: 3; padding: 18px 16px; }
+  .pagemode .specs { order: 4; margin: 0 12px 14px; }
+}
