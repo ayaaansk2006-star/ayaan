@@ -28,7 +28,7 @@ async function upiLink(url) {
   } catch { return null; }
 }
 
-r.post('/razorpay/qr', async (req, res) => {
+r.post('/razorpay/qr', require('./limit')(8, 10), async (req, res) => {
   if (!rzp.enabled) return res.status(503).json({ error: 'QR payment is not available right now' });
   try {
     const c = order.customer(req.body);

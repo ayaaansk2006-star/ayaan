@@ -49,7 +49,7 @@ pub.get('/orders/:id/invoice', wrap(async (req, res) => {
     name: o.name, phone: o.phone, address: o.address, city: o.city, state: o.state, pincode: o.pincode });
 }));
 
-pub.post('/orders/:id/request', wrap(async (req, res) => {
+pub.post('/orders/:id/request', require('./limit')(10, 60), wrap(async (req, res) => {
   const o = await owned(req), type = String(req.body.type || ''), reason = String(req.body.reason || '');
   if (!allowed(o).includes(type)) throw new Error('This request is not available for this order any more. Please WhatsApp us.');
   if (!REASONS[type].includes(reason)) throw new Error('Pick a reason');

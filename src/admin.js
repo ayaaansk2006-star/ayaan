@@ -44,6 +44,9 @@ r.use((req, res, next) => valid(cookie(req)) ? next() : res.status(401).json({ e
 r.get('/me', (req, res) => res.json({ ok: true, statuses: STATUSES }));
 
 r.get('/orders', async (req, res) => {
+  // Unpaid checkouts older than 2 hours are abandoned (the QR closes after 30 min). A late payment still reopens them (see markPaid).
+  const stale = await db.all("SELECT id FROM orders WHERE status='Awaiting Payment' AND created_at < ?", [new Date(Date.now() - 2 * 3600e3).toISOString()]);
+  for (const o of stale) { await db.run("UPDATE orders SET status='Cancelled' WHERE id=? AND status='Awaiting Payment'", [o.id]); await db.logStatus(o.id); }
   res.json((await db.all('SELECT * FROM orders ORDER BY created_at DESC')).map(db.parseOrder));
 });
 

@@ -14,22 +14,28 @@ const r = express.Router();
 const hmac = (key, data) => crypto.createHmac('sha256', key).update(data).digest('hex');
 const same = (a, b) => typeof a === 'string' && a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
-// Idempotent: browser callback and webhook may both arrive for one payment.
+// Idempotent and race-safe: browser callback, QR polling and webhook may all arrive for one payment;
+// the conditional UPDATE lets exactly one of them confirm the order and send the email.
 async function markPaid(rzpOrderId, paymentId, method = 'Razorpay') {
   const o = await db.get('SELECT id, status FROM orders WHERE rzp_order_id=?', [rzpOrderId]);
   if (!o) return null;
-  if (o.status === 'Awaiting Payment') {
-    // Test-mode keys accept fake payments, so those orders never auto-confirm.
-    const test = KEY_ID.startsWith('rzp_test_');
-    await db.run('UPDATE orders SET status=?, utr=?, method=? WHERE id=?',
-      [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : method, o.id]);
+  // Test-mode keys accept fake payments, so those orders never auto-confirm.
+  const test = KEY_ID.startsWith('rzp_test_');
+  const won = await db.run("UPDATE orders SET status=?, utr=?, method=? WHERE id=? AND status='Awaiting Payment'",
+    [test ? 'Payment Verification Pending' : 'Payment Confirmed', paymentId, test ? 'Razorpay TEST (no real money)' : method, o.id]);
+  if (won.rowsAffected) {
     await db.logStatus(o.id);
     await mail.orderPlaced(await order.find(o.id));
+  } else if (o.status === 'Cancelled') {
+    // Money arrived after the order was cancelled (late QR scan, cancel approved while paying): never lose it silently.
+    const late = await db.run("UPDATE orders SET status='Payment Verification Pending', utr=?, method=? WHERE id=? AND status='Cancelled'",
+      [paymentId, method + ' — PAID AFTER CANCEL: ship or refund', o.id]);
+    if (late.rowsAffected) { await db.logStatus(o.id); await mail.orderPlaced(await order.find(o.id)); }
   }
   return o.id;
 }
 
-r.post('/razorpay/order', express.json({ limit: '50kb' }), async (req, res) => {
+r.post('/razorpay/order', require('./limit')(8, 10), express.json({ limit: '50kb' }), async (req, res) => {
   if (!enabled) return res.status(503).json({ error: 'Online payment is not available right now. Please use UPI QR.' });
   try {
     const c = order.customer(req.body);

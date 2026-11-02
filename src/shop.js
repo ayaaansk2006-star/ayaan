@@ -14,7 +14,7 @@ r.get('/products', async (req, res) => {
   res.json((await db.all('SELECT * FROM products WHERE active=1 ORDER BY sort')).map(db.parseProduct));
 });
 
-r.post('/quote', async (req, res) => {
+r.post('/quote', require('./limit')(120, 10), async (req, res) => {
   try {
     const q = await order.price(req.body.items, req.body.pincode);
     // Keep the merchant payload byte-for-byte (apps are picky); only swap in this order's amount.
@@ -25,7 +25,9 @@ r.post('/quote', async (req, res) => {
   } catch (e) { res.status(400).json({ error: e.message }); }
 });
 
-r.post('/orders', async (req, res) => {
+// Manual UTR orders are only for when Razorpay is off; with Razorpay on, every order is confirmed by Razorpay itself.
+r.post('/orders', require('./limit')(5, 10), async (req, res) => {
+  if (rzp.enabled) return res.status(410).json({ error: 'Please pay with the UPI QR or card option.' });
   try {
     const c = order.customer(req.body);
     const utr = String(req.body.utr ?? '').trim();
