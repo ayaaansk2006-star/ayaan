@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /account
+Disallow: /invoice
+Sitemap: https://altitudemoto.vercel.app/sitemap.xml

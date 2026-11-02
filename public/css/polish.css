@@ -190,3 +190,13 @@ body.cart-open { overflow: hidden; }
 .undo { display: flex; align-items: center; gap: 14px; background: #1b1b1b; color: #fff; border: 1px solid #333; }
 .undo button { background: none; border: 0; color: var(--lime); font-weight: 800; cursor: pointer; font: inherit; font-weight: 800; }
 .undo { white-space: nowrap; width: max-content; }
+
+/* Recently viewed row */
+.recent:empty { display: none; }
+.recent { margin: 0 0 18px; } .recent .row b { font-size: 15px; }
+.rv-clear { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; font-size: 13px; }
+.rv-row { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+.rv-row a { flex: none; width: 150px; display: grid; gap: 4px; font-size: 12px; scroll-snap-align: start; }
+.rv-row img { width: 150px; height: 110px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); transition: border-color .2s; }
+.rv-row a:hover img { border-color: var(--lime); }
+.rv-row span { color: #ddd; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

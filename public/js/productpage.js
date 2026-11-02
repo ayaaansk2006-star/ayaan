@@ -38,6 +38,8 @@ api('/api/products').then(list => {
   document.title = `${p.title} — ${p.price ? inr(p.price) : 'Price on request'} | Altitude Moto`;
   document.querySelector('meta[name=description]').content = p.desc;
   $('#crumbs').innerHTML = `<a href="/">Home</a><span>›</span><a href="/#shop">${esc(p.brand)}</a><span>›</span><b>${esc(p.bike)}</b>`;
+  // Remember for the homepage "Recently viewed" row (this device only).
+  localStorage.setItem('am_seen', JSON.stringify([p.slug, ...JSON.parse(localStorage.getItem('am_seen') || '[]').filter(x => x !== p.slug)].slice(0, 8)));
   openProduct(p);
   Cart.render();
   const related = list.filter(x => x.slug !== p.slug && x.bike === p.bike)

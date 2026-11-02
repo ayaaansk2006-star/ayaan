@@ -1,11 +1,12 @@
-<!doctype html>
+// Product page HTML; the <!--SEO--> slot gets per-product title, description, link-preview tags and JSON-LD (see seo.js).
+module.exports = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Altitude Moto</title><meta name="description" content="">
+<!--SEO-->
 <meta name="theme-color" content="#0a0a0a"><link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="stylesheet" href="/css/style.css?v=7"><link rel="stylesheet" href="/css/home.css?v=18">
-<link rel="stylesheet" href="/css/polish.css?v=6">
+<link rel="stylesheet" href="/css/polish.css?v=7">
 <link rel="stylesheet" href="/css/productpage.css?v=2">
 </head>
 <body>
@@ -59,8 +60,9 @@
 
 <script src="/js/common.js?v=8"></script>
 <script src="/js/product.js?v=18"></script>
-<script src="/js/productpage.js?v=1"></script>
+<script src="/js/productpage.js?v=2"></script>
 <script src="/js/cartplus.js?v=1"></script>
 <script src="/js/suggest.js?v=1"></script>
 </body>
 </html>
+`;
